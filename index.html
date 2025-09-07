@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Animated Emoji Generator - Enhanced</title>
+    <title>Telegram Animated Emoji Generator - Optimized</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.js"></script>
@@ -48,7 +48,7 @@
                 </div>
 
                 <div id="urlUploadSection" class="upload-section hidden">
-                    <div class="space-y-4">
+                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Video URL ထည့်ပါ:</label>
                             <input type="url" id="videoUrl" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="https://example.com/video.mp4">
@@ -63,8 +63,7 @@
                 <div id="previewSection" class="mt-6 hidden">
                     <h3 class="text-lg font-semibold text-gray-800 mb-3">မူရင်း Video:</h3>
                     <div class="flex justify-center">
-                        <video id="originalVideo" controls playsinline webkit-playsinline class="max-w-xs rounded-lg shadow-md">
-                        </video>
+                        <video id="originalVideo" controls playsinline webkit-playsinline class="max-w-xs rounded-lg shadow-md"></video>
                     </div>
                     <div class="mt-4 text-center">
                         <button id="processBtn" class="px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold" disabled>
@@ -84,51 +83,31 @@
                 <div class="space-y-4">
                     <div class="processing-step" id="step1">
                         <div class="flex items-center">
-                            <i class="fas fa-file-video text-indigo-600 mr-3"></i>
-                            <span class="text-gray-700">Step 1/5: Loading video into memory...</span>
+                            <i class="fas fa-file-import text-indigo-600 mr-3"></i>
+                            <span class="text-gray-700">Step 1/3: Reading video file... (ဖိုင်ကြီးလျှင် ကြာနိုင်သည်)</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                            <div class="progress-bar bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            <div class="progress-bar bg-indigo-600 h-2 rounded-full" style="width: 0%"></div>
                         </div>
                     </div>
                     
                     <div class="processing-step hidden" id="step2">
                         <div class="flex items-center">
-                            <i class="fas fa-cut text-indigo-600 mr-3"></i>
-                            <span class="text-gray-700">Step 2/5: Trimming video to 3 seconds...</span>
+                            <i class="fas fa-magic text-indigo-600 mr-3"></i>
+                            <span class="text-gray-700">Step 2/3: Trimming, removing background & encoding...</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                            <div class="progress-bar bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            <div class="progress-bar bg-indigo-600 h-2 rounded-full" style="width: 0%"></div>
                         </div>
                     </div>
                     
                     <div class="processing-step hidden" id="step3">
                         <div class="flex items-center">
-                            <i class="fas fa-magic text-indigo-600 mr-3"></i>
-                            <span class="text-gray-700">Step 3/5: Removing background and resizing...</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                            <div class="progress-bar bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="processing-step hidden" id="step4">
-                        <div class="flex items-center">
-                            <i class="fas fa-compress text-indigo-600 mr-3"></i>
-                            <span class="text-gray-700">Step 4/5: Encoding and compressing to WebM...</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                            <div class="progress-bar bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                     <div class="processing-step hidden" id="step5">
-                        <div class="flex items-center">
                             <i class="fas fa-check-double text-indigo-600 mr-3"></i>
-                            <span class="text-gray-700">Step 5/5: Finalizing and checking size...</span>
+                            <span class="text-gray-700">Step 3/3: Finalizing and checking size...</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                            <div class="progress-bar bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            <div class="progress-bar bg-indigo-600 h-2 rounded-full" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
@@ -139,22 +118,18 @@
             </div>
 
             <div id="resultSection" class="bg-white rounded-lg shadow-lg p-6 mb-6 hidden">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">
                     <i class="fas fa-check-circle text-green-600 mr-2"></i>
                     Processing ပြီးစီးပါပြီ!
                 </h2>
-                
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="text-center">
                         <h3 class="text-lg font-semibold text-gray-700 mb-3">မူရင်း Video</h3>
-                        <video id="originalPreview" controls playsinline webkit-playsinline class="w-full max-w-xs mx-auto rounded-lg shadow-md">
-                        </video>
+                        <video id="originalPreview" controls playsinline webkit-playsinline class="w-full max-w-xs mx-auto rounded-lg shadow-md"></video>
                     </div>
-                    
                     <div class="text-center">
                         <h3 class="text-lg font-semibold text-gray-700 mb-3">ပြုပြင်ပြီး WebM</h3>
-                        <video id="processedPreview" controls playsinline webkit-playsinline class="w-full max-w-xs mx-auto rounded-lg shadow-md bg-checkered">
-                        </video>
+                        <video id="processedPreview" controls playsinline webkit-playsinline class="w-full max-w-xs mx-auto rounded-lg shadow-md bg-checkered"></video>
                         <div class="mt-3 space-y-2">
                             <p class="text-sm text-gray-600">
                                 <i class="fas fa-info-circle mr-1"></i>
@@ -167,12 +142,8 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <h4 class="font-semibold text-blue-800 mb-2">
-                        <i class="fab fa-telegram-plane mr-2"></i>
-                        Telegram မှာ အသုံးပြုပုံ:
-                    </h4>
+                    <h4 class="font-semibold text-blue-800 mb-2"><i class="fab fa-telegram-plane mr-2"></i>Telegram မှာ အသုံးပြုပုံ:</h4>
                     <ol class="list-decimal list-inside text-sm text-blue-700 space-y-1">
                         <li>Telegram မှာ @Stickers bot ကို ရှာပါ</li>
                         <li><code>/newemojipack</code> command ကို ပို့ပါ</li>
@@ -185,12 +156,8 @@
             </div>
 
             <div id="gallerySection" class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-                    <i class="fas fa-images mr-2"></i>
-                    ပြုလုပ်ပြီး Emoji များ
-                </h2>
-                <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    </div>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="fas fa-images mr-2"></i>ပြုလုပ်ပြီး Emoji များ</h2>
+                <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
                 <div id="emptyGallery" class="text-center py-8 text-gray-500">
                     <i class="fas fa-images text-4xl mb-3"></i>
                     <p>မည်သည့် emoji မှ မရှိသေးပါ</p>
@@ -206,49 +173,22 @@
                 <h3 class="text-lg font-semibold text-gray-800">Error</h3>
             </div>
             <p id="errorMessage" class="text-gray-600 mb-4"></p>
-            <button id="closeErrorBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                ပိတ်ရန်
-            </button>
+            <button id="closeErrorBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">ပိတ်ရန်</button>
         </div>
     </div>
 
     <style>
-        .bg-checkered {
-            background-image: 
-                linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
-                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
-                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-        }
-        
-        .processing-step {
-            opacity: 0.5;
-            transition: opacity 0.3s;
-        }
-        
-        .processing-step.active {
-            opacity: 1;
-        }
-        
-        .upload-section.hidden {
-            display: none;
-        }
-        
-        #fileInputBtn.active, #urlInputBtn.active {
-            background-color: #4f46e5;
-            color: white;
-        }
-        
-        #fileInputBtn:not(.active), #urlInputBtn:not(.active) {
-            background-color: #d1d5db;
-            color: #374151;
-        }
+        .bg-checkered { background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
+        .processing-step { opacity: 0.5; transition: opacity 0.3s; }
+        .processing-step.active { opacity: 1; }
+        .upload-section.hidden { display: none; }
+        #fileInputBtn.active, #urlInputBtn.active { background-color: #4f46e5; color: white; }
+        #fileInputBtn:not(.active), #urlInputBtn:not(.active) { background-color: #d1d5db; color: #374151; }
     </style>
 
     <script>
         class TelegramEmojiGenerator {
+            // Constructor and init functions remain largely the same
             constructor() {
                 this.ffmpeg = null;
                 this.isFfmpegLoaded = false;
@@ -261,22 +201,20 @@
             async init() {
                 this.setupEventListeners();
                 this.loadGallery();
-                this.initFFmpeg(); // Don't await, let it load in the background
+                this.initFFmpeg();
             }
-
+            
+            // Event Listeners and other helpers remain the same as previous version
             setupEventListeners() {
                 document.getElementById('fileInputBtn').addEventListener('click', () => this.toggleInputMethod('file'));
                 document.getElementById('urlInputBtn').addEventListener('click', () => this.toggleInputMethod('url'));
-                
                 const dropZone = document.getElementById('dropZone');
                 const fileInput = document.getElementById('fileInput');
-                
                 dropZone.addEventListener('click', () => fileInput.click());
                 dropZone.addEventListener('dragover', (e) => this.handleDragOver(e));
                 dropZone.addEventListener('dragleave', (e) => e.currentTarget.classList.remove('border-indigo-500', 'bg-indigo-50'));
                 dropZone.addEventListener('drop', (e) => this.handleDrop(e));
                 fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
-                
                 document.getElementById('loadUrlBtn').addEventListener('click', () => this.loadVideoFromUrl());
                 document.getElementById('processBtn').addEventListener('click', () => this.processVideo());
                 document.getElementById('downloadBtn').addEventListener('click', () => this.downloadResult());
@@ -288,91 +226,35 @@
                 const urlBtn = document.getElementById('urlInputBtn');
                 const fileSection = document.getElementById('fileUploadSection');
                 const urlSection = document.getElementById('urlUploadSection');
-                
                 if (method === 'file') {
-                    fileBtn.classList.add('active');
-                    urlBtn.classList.remove('active');
-                    fileSection.classList.remove('hidden');
-                    urlSection.classList.add('hidden');
+                    fileBtn.classList.add('active'); urlBtn.classList.remove('active');
+                    fileSection.classList.remove('hidden'); urlSection.classList.add('hidden');
                 } else {
-                    fileBtn.classList.remove('active');
-                    urlBtn.classList.add('active');
-                    fileSection.classList.add('hidden');
-                    urlSection.classList.remove('hidden');
+                    fileBtn.classList.remove('active'); urlBtn.classList.add('active');
+                    fileSection.classList.add('hidden'); urlSection.classList.remove('hidden');
                 }
             }
 
-            handleDragOver(e) {
-                e.preventDefault();
-                e.currentTarget.classList.add('border-indigo-500', 'bg-indigo-50');
-            }
-
-            handleDrop(e) {
-                e.preventDefault();
-                e.currentTarget.classList.remove('border-indigo-500', 'bg-indigo-50');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) this.loadVideoFile(files[0]);
-            }
-
-            handleFileSelect(e) {
-                const file = e.target.files[0];
-                if (file) this.loadVideoFile(file);
-            }
-
-            loadVideoFile(file) {
-                if (file.size > 100 * 1024 * 1024) {
-                    this.showError('ဖိုင်အရွယ်အစား 100MB ထက် ကြီးနေပါတယ်');
-                    return;
-                }
-                const url = URL.createObjectURL(file);
-                this.loadVideo(url, file.name);
-            }
-
-            async loadVideoFromUrl() {
-                const url = document.getElementById('videoUrl').value.trim();
-                if (!url) {
-                    this.showError('Video URL ထည့်ပါ');
-                    return;
-                }
-                try {
-                    new URL(url);
-                    // Using a proxy for CORS issues might be needed for some URLs
-                    this.loadVideo(url, 'Video_from_URL');
-                } catch {
-                    this.showError('မှန်ကန်သော URL ထည့်ပါ');
-                }
-            }
-
-            loadVideo(src, name) {
-                const video = document.getElementById('originalVideo');
-                video.src = src;
-                video.onloadedmetadata = () => {
-                    this.currentVideo = { src, name, duration: video.duration };
-                    document.getElementById('previewSection').classList.remove('hidden');
-                    document.getElementById('resultSection').classList.add('hidden');
-                };
-                video.onerror = () => {
-                    this.showError('Video load လုပ်၍ မရပါ။ URL ကိုစစ်ဆေးပါ သို့မဟုတ် ဖိုင်ကို upload လုပ်ကြည့်ပါ။');
-                };
-            }
+            handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('border-indigo-500', 'bg-indigo-50'); }
+            handleDrop(e) { e.preventDefault(); e.currentTarget.classList.remove('border-indigo-500', 'bg-indigo-50'); const files = e.dataTransfer.files; if (files.length > 0) this.loadVideoFile(files[0]); }
+            handleFileSelect(e) { const file = e.target.files[0]; if (file) this.loadVideoFile(file); }
+            loadVideoFile(file) { if (file.size > 100 * 1024 * 1024) { this.showError('ဖိုင်အရွယ်အစား 100MB ထက် ကြီးနေပါတယ်'); return; } const url = URL.createObjectURL(file); this.loadVideo(url, file.name); }
+            async loadVideoFromUrl() { const url = document.getElementById('videoUrl').value.trim(); if (!url) { this.showError('Video URL ထည့်ပါ'); return; } try { new URL(url); this.loadVideo(url, 'Video_from_URL'); } catch { this.showError('မှန်ကန်သော URL ထည့်ပါ'); } }
+            loadVideo(src, name) { const video = document.getElementById('originalVideo'); video.src = src; video.onloadedmetadata = () => { this.currentVideo = { src, name, duration: video.duration }; document.getElementById('previewSection').classList.remove('hidden'); document.getElementById('resultSection').classList.add('hidden'); }; video.onerror = () => { this.showError('Video load လုပ်၍ မရပါ။ URL ကိုစစ်ဆေးပါ သို့မဟုတ် ဖိုင်ကို upload လုပ်ကြည့်ပါ။'); }; }
 
             async initFFmpeg() {
                 const processBtn = document.getElementById('processBtn');
                 processBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> FFmpeg Loading...';
-
                 try {
-                    const { FFmpeg } = FFmpegWASM;
+                    const { FFmpeg, FFmpegUtil } = FFmpegWASM;
                     const { toBlobURL } = FFmpegUtil;
-                    
                     this.ffmpeg = new FFmpeg();
                     this.ffmpeg.on('log', ({ message }) => console.log(message));
-
                     const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
                     await this.ffmpeg.load({
                         coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
                         wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
                     });
-
                     this.isFfmpegLoaded = true;
                     processBtn.disabled = false;
                     processBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> Processing စတင်ရန်';
@@ -386,59 +268,54 @@
             }
 
             async processVideo() {
-                if (!this.isFfmpegLoaded) {
-                    this.showError('FFmpeg is not ready. Please wait for it to finish loading or refresh the page if it failed.');
-                    return;
-                }
-                if (!this.currentVideo) {
-                    this.showError('Please upload a video first.');
-                    return;
-                }
+                if (!this.isFfmpegLoaded) { this.showError('FFmpeg is not ready. Please wait for it to finish loading or refresh the page if it failed.'); return; }
+                if (!this.currentVideo) { this.showError('Please upload a video first.'); return; }
 
                 document.getElementById('processingSection').classList.remove('hidden');
                 document.getElementById('previewSection').classList.add('hidden');
                 document.getElementById('resultSection').classList.add('hidden');
 
                 try {
-                    const { fetchFile } = FFmpegUtil;
+                    const { fetchFile } = FFmpegWASM.FFmpegUtil;
 
-                    this.updateProcessingStatus('Step 1/5: Loading video into memory...', 'step1');
+                    // Step 1: Write file to memory (This is the unavoidable slow part for large files)
+                    this.updateProcessingStatus('Step 1/3: Reading video file...', 'step1', "ဖိုင်ကြီးလျှင် ကြာနိုင်သည်");
                     await this.ffmpeg.writeFile('input.file', await fetchFile(this.currentVideo.src));
                     this.updateProgress('step1', 100);
 
-                    this.updateProcessingStatus('Step 2/5: Trimming video to 3 seconds...', 'step2');
+                    // Step 2: Run all processing in a single, efficient command
+                    this.updateProcessingStatus('Step 2/3: Trimming, removing background & encoding...', 'step2');
                     this.ffmpeg.on('progress', ({ progress }) => this.updateProgress('step2', Math.min(1, progress) * 100));
-                    await this.ffmpeg.exec(['-i', 'input.file', '-t', '3', '-an', 'trimmed.webm']);
+                    
+                    const ffmpegCommand = [
+                        '-i', 'input.file',
+                        '-t', '3',                                 // Trim to 3 seconds
+                        '-vf', 'scale=100:100,colorkey=0x00ff00:0.3:0.2', // Resize and apply green screen effect
+                        '-c:v', 'libvpx-vp9',                       // Use WebM VP9 codec
+                        '-pix_fmt', 'yuva420p',                     // Support transparency
+                        '-an',                                      // Remove audio
+                        '-b:v', '250k',                             // Set video bitrate
+                        '-crf', '30',                               // Constant Rate Factor for quality
+                        'final.webm'
+                    ];
+                    await this.ffmpeg.exec(ffmpegCommand);
                     this.ffmpeg.off('progress');
                     this.updateProgress('step2', 100);
-
-                    this.updateProcessingStatus('Step 3/5: Removing background and resizing...', 'step3');
-                    this.ffmpeg.on('progress', ({ progress }) => this.updateProgress('step3', Math.min(1, progress) * 100));
-                    await this.ffmpeg.exec(['-i', 'trimmed.webm', '-vf', 'scale=100:100,colorkey=0x00ff00:0.3:0.2', '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-an', 'transparent.webm']);
-                    this.ffmpeg.off('progress');
-                    this.updateProgress('step3', 100);
-                    
-                    this.updateProcessingStatus('Step 4/5: Encoding and compressing to WebM...', 'step4');
-                    this.ffmpeg.on('progress', ({ progress }) => this.updateProgress('step4', Math.min(1, progress) * 100));
-                    await this.ffmpeg.exec(['-i', 'transparent.webm', '-c:v', 'libvpx-vp9', '-b:v', '250k', '-crf', '30', '-an', '-vf', 'scale=100:100', 'final.webm']);
-                    this.ffmpeg.off('progress');
-                    this.updateProgress('step4', 100);
                     
                     let data = await this.ffmpeg.readFile('final.webm');
                     this.processedBlob = new Blob([data.buffer], { type: 'video/webm' });
 
-                    this.updateProcessingStatus('Step 5/5: Finalizing and checking size...', 'step5');
+                    // Step 3: Final size check and re-compression if needed
+                    this.updateProcessingStatus('Step 3/3: Finalizing and checking size...', 'step3');
                     let compressionLevel = 35;
                     while (this.processedBlob.size > 64 * 1024 && compressionLevel < 51) {
-                         this.updateProcessingStatus(`File too large (${(this.processedBlob.size / 1024).toFixed(1)} KB). Re-compressing...`, 'step5');
-                         this.ffmpeg.on('progress', ({ progress }) => this.updateProgress('step5', Math.min(1, progress) * 100));
-                         await this.ffmpeg.exec(['-i', 'transparent.webm', '-c:v', 'libvpx-vp9', '-crf', compressionLevel.toString(), '-b:v', '128k', '-an', '-vf', 'scale=100:100', 'final_compressed.webm']);
-                         this.ffmpeg.off('progress');
+                         this.updateProcessingStatus(`File is too large (${(this.processedBlob.size / 1024).toFixed(1)} KB). Re-compressing...`, 'step3');
+                         await this.ffmpeg.exec(['-i', 'final.webm', '-c:v', 'libvpx-vp9', '-crf', compressionLevel.toString(), '-an', 'final_compressed.webm']);
                          const compressedData = await this.ffmpeg.readFile('final_compressed.webm');
                          this.processedBlob = new Blob([compressedData.buffer], { type: 'video/webm' });
                          compressionLevel += 5;
                     }
-                    this.updateProgress('step5', 100);
+                    this.updateProgress('step3', 100);
 
                     this.showResult();
                     this.saveToGallery();
@@ -451,8 +328,9 @@
                 }
             }
 
-            updateProcessingStatus(message, stepId) {
-                document.getElementById('processingStatus').textContent = message;
+            updateProcessingStatus(message, stepId, subStatus = '') {
+                document.querySelector(`#${stepId} span`).textContent = message;
+                document.getElementById('processingStatus').textContent = subStatus || message;
                 document.querySelectorAll('.processing-step').forEach(step => {
                     step.classList.add('hidden');
                     step.classList.remove('active');
@@ -465,96 +343,26 @@
 
             updateProgress(stepId, progress) {
                 const step = document.getElementById(stepId);
-                const progressBar = step.querySelector('.progress-bar');
-                progressBar.style.width = `${progress}%`;
-            }
-
-            showResult() {
-                document.getElementById('resultSection').classList.remove('hidden');
-                
-                const originalPreview = document.getElementById('originalPreview');
-                originalPreview.src = this.currentVideo.src;
-                
-                const processedPreview = document.getElementById('processedPreview');
-                processedPreview.src = URL.createObjectURL(this.processedBlob);
-                
-                const fileSizeKB = (this.processedBlob.size / 1024).toFixed(1);
-                document.getElementById('fileSize').textContent = `${fileSizeKB} KB`;
-            }
-
-            downloadResult() {
-                if (!this.processedBlob) return;
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(this.processedBlob);
-                a.download = `telegram_emoji_${Date.now()}.webm`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-
-            saveToGallery() {
-                const reader = new FileReader();
-                reader.readAsDataURL(this.processedBlob); 
-                reader.onloadend = () => {
-                    const base64data = reader.result;                
-                    const item = {
-                        id: Date.now(),
-                        name: this.currentVideo.name,
-                        dataUrl: base64data,
-                        size: (this.processedBlob.size / 1024).toFixed(1),
-                        created: new Date().toLocaleString()
-                    };
-                    this.gallery.unshift(item);
-                    if (this.gallery.length > 12) this.gallery.pop(); // Limit gallery size
-                    localStorage.setItem('emojiGallery', JSON.stringify(this.gallery));
-                    this.loadGallery();
+                if(step) {
+                    const progressBar = step.querySelector('.progress-bar');
+                    progressBar.style.width = `${progress}%`;
                 }
             }
 
-            loadGallery() {
-                const grid = document.getElementById('galleryGrid');
-                const empty = document.getElementById('emptyGallery');
-                
-                if (this.gallery.length === 0) {
-                    grid.classList.add('hidden');
-                    empty.classList.remove('hidden');
-                    return;
-                }
-                
-                grid.classList.remove('hidden');
-                empty.classList.add('hidden');
-                
-                grid.innerHTML = this.gallery.map(item => `
+            // All other functions (showResult, downloadResult, saveToGallery, etc.) remain the same
+            showResult() { document.getElementById('resultSection').classList.remove('hidden'); const originalPreview = document.getElementById('originalPreview'); originalPreview.src = this.currentVideo.src; const processedPreview = document.getElementById('processedPreview'); processedPreview.src = URL.createObjectURL(this.processedBlob); const fileSizeKB = (this.processedBlob.size / 1024).toFixed(1); document.getElementById('fileSize').textContent = `${fileSizeKB} KB`; }
+            downloadResult() { if (!this.processedBlob) return; const a = document.createElement('a'); a.href = URL.createObjectURL(this.processedBlob); a.download = `telegram_emoji_${Date.now()}.webm`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
+            saveToGallery() { const reader = new FileReader(); reader.readAsDataURL(this.processedBlob); reader.onloadend = () => { const base64data = reader.result; const item = { id: Date.now(), name: this.currentVideo.name, dataUrl: base64data, size: (this.processedBlob.size / 1024).toFixed(1), created: new Date().toLocaleString() }; this.gallery.unshift(item); if (this.gallery.length > 12) this.gallery.pop(); localStorage.setItem('emojiGallery', JSON.stringify(this.gallery)); this.loadGallery(); } }
+            loadGallery() { const grid = document.getElementById('galleryGrid'); const empty = document.getElementById('emptyGallery'); if (this.gallery.length === 0) { grid.classList.add('hidden'); empty.classList.remove('hidden'); return; } grid.classList.remove('hidden'); empty.classList.add('hidden'); grid.innerHTML = this.gallery.map(item => `
                     <div class="bg-gray-50 rounded-lg p-3 text-center transition-transform transform hover:scale-105">
                         <video src="${item.dataUrl}" class="w-full h-20 object-contain rounded bg-checkered mb-2" muted loop autoplay playsinline webkit-playsinline></video>
                         <p class="text-xs text-gray-600 truncate" title="${item.name}">${item.name}</p>
                         <p class="text-xs text-gray-500">${item.size} KB</p>
-                        <button onclick="app.downloadGalleryItem('${item.dataUrl}', '${item.name}')" class="mt-1 px-2 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600">
-                            <i class="fas fa-download"></i>
-                        </button>
-                    </div>
-                `).join('');
-            }
-
-            downloadGalleryItem(dataUrl, name) {
-                const a = document.createElement('a');
-                a.href = dataUrl;
-                a.download = `emoji_${name.replace(/[^a-zA-Z0-9]/g, '_')}.webm`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-
-            showError(message) {
-                document.getElementById('errorMessage').textContent = message;
-                document.getElementById('errorModal').classList.remove('hidden');
-                document.getElementById('errorModal').classList.add('flex');
-            }
-
-            hideError() {
-                document.getElementById('errorModal').classList.add('hidden');
-                document.getElementById('errorModal').classList.remove('flex');
-            }
+                        <button onclick="app.downloadGalleryItem('${item.dataUrl}', '${item.name}')" class="mt-1 px-2 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"><i class="fas fa-download"></i></button>
+                    </div>`).join(''); }
+            downloadGalleryItem(dataUrl, name) { const a = document.createElement('a'); a.href = dataUrl; a.download = `emoji_${name.replace(/[^a-zA-Z0-9]/g, '_')}.webm`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
+            showError(message) { document.getElementById('errorMessage').textContent = message; document.getElementById('errorModal').classList.remove('hidden'); document.getElementById('errorModal').classList.add('flex'); }
+            hideError() { document.getElementById('errorModal').classList.add('hidden'); document.getElementById('errorModal').classList.remove('flex'); }
         }
         
         const app = new TelegramEmojiGenerator();
