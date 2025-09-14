@@ -4,281 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Myanmar E-Shop - Online Shopping Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#06b6d4',
+                        dark: '#0f172a',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.6s ease-in-out',
+                        'slideUp': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* --- ခေတ်မီ ဒီဇိုင်းအတွက် CSS Variables များ --- */
-        :root {
-            --bg-dark: #0d0c22;
-            --bg-light: #1d1b3e;
-            --primary: #00f5c3;
-            --secondary: #8e44ad;
-            --text-light: #e0e0e0;
-            --text-dark: #333333;
-            --glass-bg: rgba(29, 27, 62, 0.5);
-            --border-glow: rgba(0, 245, 195, 0.3);
-        }
-
-        /* --- မြန်မာ Font နှင့် အခြေခံ Styles များ --- */
-        * {
-            font-family: 'Noto Sans Myanmar', 'Inter', sans-serif;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* لمسة النقر على الجوال */
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            background-image:
-                radial-gradient(at 20% 25%, hsla(285, 90%, 50%, 0.3) 0px, transparent 50%),
-                radial-gradient(at 80% 30%, hsla(170, 100%, 50%, 0.3) 0px, transparent 50%),
-                radial-gradient(at 25% 85%, hsla(215, 90%, 60%, 0.3) 0px, transparent 50%),
-                radial-gradient(at 75% 90%, hsla(330, 90%, 60%, 0.3) 0px, transparent 50%);
-            color: var(--text-light);
-            overflow-x: hidden;
-        }
-
-        /* --- Glassmorphism Card ဒီဇိုင်း --- */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.5);
-            border-color: var(--border-glow);
-        }
-
-        /* --- ခလုတ် (Button) ဒီဇိုင်းအသစ် --- */
-        .btn-glow {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: var(--bg-dark);
-            font-weight: 700;
-            border-radius: 12px;
-            padding: 14px 24px;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease-out, box-shadow 0.3s ease;
-        }
-
-        .btn-glow:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(0, 245, 195, 0.2);
-        }
-
-        /* --- Input Field ဒီဇိုင်း --- */
-        .modern-input {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border-radius: 10px;
-            padding: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .modern-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--border-glow);
-        }
-
-        /* --- Loading Animation ဒီဇိုင်းအသစ် --- */
-        #loadingOverlay .loading-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
-        .loading-dot {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 15px; height: 15px;
-            margin: -7.5px 0 0 -7.5px;
-            border-radius: 50%;
-            animation: loading-orbit 2s ease-in-out infinite;
-        }
-        .loading-dot:nth-child(1) { background-color: var(--primary); animation-delay: 0s; }
-        .loading-dot:nth-child(2) { background-color: var(--secondary); animation-delay: -0.7s; }
-        .loading-dot:nth-child(3) { background-color: #3498db; animation-delay: -1.4s; }
-
-        @keyframes loading-orbit {
-            0%, 100% { transform: rotate(0deg) translateX(30px) scale(0.8); }
-            50% { transform: rotate(180deg) translateX(30px) scale(1.2); }
-        }
-
-        /* --- Page Transition Animations --- */
-        .page-content-wrapper {
-            animation: page-enter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        @keyframes page-enter {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        .product-card, .history-card, .news-card {
-            will-change: transform, opacity;
-            animation: item-enter 0.5s ease-out forwards;
-            opacity: 0;
-        }
-
-        @keyframes item-enter {
-            from { transform: translateY(20px); opacity: 0; }
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
         
-        /* --- အောက်ခြေ Navigation Bar ဒီဇိုင်း --- */
-        .bottom-nav {
-            background: rgba(13, 12, 34, 0.8);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(0, 245, 195, 0.2);
-            border-radius: 20px 20px 0 0;
-            padding: 10px 0;
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+            to { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); }
         }
         
-        .nav-item {
-            color: var(--text-light);
-            opacity: 0.6;
-            transition: all 0.3s ease;
-            position: relative;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
         }
         
-        .nav-item.active {
-            opacity: 1;
-            transform: translateY(-5px);
-            color: var(--primary);
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .nav-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 6px;
-            height: 6px;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        /* --- Modal ဒီဇိုင်း --- */
-        .modal-container {
-            animation: modal-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes modal-pop {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        /* --- အခြားအလှဆင်မှုများ --- */
-        .tab-active {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: var(--bg-dark);
-        }
-
-        .text-gradient {
-            background: -webkit-linear-gradient(45deg, var(--primary), #8e44ad);
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #00d1a1; }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(99, 102, 241, 0.3);
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .currency-symbol {
+            font-weight: 600;
+            color: #10b981;
+        }
+        
+        .platform-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            transition: all 0.3s ease;
+        }
+        
+        .platform-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-btn {
+            color: white;
+        }
+        
+        .nav-btn.active {
+            color: #06b6d4;
+            transform: scale(1.1);
+        }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="bg-dark text-white min-h-screen flex flex-col">
+    
     <!-- Connection Status -->
-    <div id="connectionStatus" class="fixed top-4 right-4 z-[1000] px-4 py-2 rounded-full text-xs font-semibold glass-card">
-        <i class="fas fa-wifi mr-1"></i>
-        <span id="connectionText">ချိတ်ဆက်နေသည်...</span>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
-        <div class="text-center">
-            <div class="loading-container mx-auto mb-4">
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-            </div>
-            <p class="text-gray-300 font-medium tracking-widest">လုပ်ဆောင်နေသည်...</p>
+    <div id="connectionStatus" class="fixed top-0 left-0 right-0 z-50 p-3 text-center text-sm font-medium transition-all duration-300">
+        <div id="statusContent" class="inline-flex items-center gap-2">
+            <div class="loading-spinner w-4 h-4"></div>
+            <span>ဒေတာဘေ့စ် ချိတ်ဆက်နေသည်...</span>
         </div>
     </div>
 
-    <!-- Success/Error Messages -->
-    <div id="messageContainer" class="fixed top-20 right-4 z-50 space-y-3"></div>
-
-    <!-- Authentication Section -->
+    <!-- Auth Container -->
     <div id="authSection" class="min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-md">
+            
             <!-- Logo -->
             <div class="text-center mb-8">
                 <img src="https://github.com/Opper125/onlinefullshop/blob/27ec68bd95250f633560c60baaad541d29f94f16/logo-dashboard.png?raw=true" 
-                     alt="Myanmar E-Shop Logo" class="w-28 h-28 mx-auto rounded-3xl shadow-lg mb-4 border-2 border-[var(--primary)] p-1">
-                <h1 class="text-4xl font-bold text-white tracking-wider">Myanmar E-Shop</h1>
-                <p class="text-gradient font-semibold">အွန်လိုင်းဈေးဝယ်စင်တာ</p>
+                     alt="Myanmar E-Shop" class="w-24 h-24 mx-auto rounded-2xl mb-4 animate-pulse-slow">
+                <h1 class="text-3xl font-bold gradient-text">Myanmar E-Shop</h1>
+                <p class="text-gray-400 mt-2">Professional E-Commerce Platform</p>
             </div>
 
-            <!-- Auth Form -->
-            <div class="glass-card p-6">
-                <div class="flex mb-6 bg-black bg-opacity-20 rounded-lg p-1">
-                    <button id="loginTab" class="flex-1 py-2 px-4 rounded-lg font-medium transition-all mr-1 tab-active">
-                        အကောင့်ဝင်ရန်
+            <!-- Auth Tabs -->
+            <div class="glass-effect p-8 rounded-2xl animate-fadeIn">
+                <div class="flex mb-6">
+                    <button id="loginTab" class="flex-1 py-3 px-4 rounded-lg font-medium transition-all mr-2 text-white bg-primary/20 hover:bg-primary/40">
+                        အကောင့်ဝင်ရောက်
                     </button>
-                    <button id="signupTab" class="flex-1 py-2 px-4 rounded-lg font-medium transition-all">
-                        အကောင့်ဖွင့်ရန်
+                    <button id="signupTab" class="flex-1 py-3 px-4 rounded-lg font-medium transition-all text-white bg-gray-100/10 hover:bg-gray-100/20">
+                        အကောင့်ဖွင့်
                     </button>
                 </div>
 
                 <!-- Login Form -->
                 <form id="loginForm" class="space-y-4">
                     <div>
-                        <input type="text" id="loginInput" class="w-full modern-input" placeholder="အီးမေးလ် သို့မဟုတ် အသုံးပြုသူနာမည်">
+                        <label class="block text-sm font-medium mb-2">အီးမေးလ် သို့မဟုတ် အသုံးပြုသူနာမည်</label>
+                        <input type="text" id="loginInput" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
                     </div>
                     <div>
-                        <input type="password" id="loginPassword" class="w-full modern-input" placeholder="စကားဝှက်">
+                        <label class="block text-sm font-medium mb-2">စကားဝှက်</label>
+                        <input type="password" id="loginPassword" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
                     </div>
-                    <button type="submit" class="w-full btn-glow">
-                        ဝင်ရောက်မည်
+                    <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:from-primary/80 hover:to-secondary/80 transition-all transform hover:scale-105 animate-glow">
+                        အကောင့်ဝင်ရောက်
                     </button>
                 </form>
 
                 <!-- Signup Form -->
                 <form id="signupForm" class="space-y-4 hidden">
                     <div>
-                        <input type="text" id="signupName" class="w-full modern-input" placeholder="အမည်" required>
+                        <label class="block text-sm font-medium mb-2">အမည်</label>
+                        <input type="text" id="signupName" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
                     </div>
                     <div>
-                        <input type="text" id="signupUsername" class="w-full modern-input" placeholder="အသုံးပြုသူနာမည်" required>
+                        <label class="block text-sm font-medium mb-2">အသုံးပြုသူနာမည်</label>
+                        <input type="text" id="signupUsername" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
                     </div>
                     <div>
-                        <input type="email" id="signupEmail" class="w-full modern-input" placeholder="အီးမေးလ်" required>
+                        <label class="block text-sm font-medium mb-2">အီးမေးလ်</label>
+                        <input type="email" id="signupEmail" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
                     </div>
                     <div>
-                        <input type="password" id="signupPassword" class="w-full modern-input" placeholder="စကားဝှက်" required>
+                        <label class="block text-sm font-medium mb-2">စကားဝှက်</label>
+                        <input type="password" id="signupPassword" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
                     </div>
-                    <button type="submit" class="w-full btn-glow">
-                        အကောင့်ဖွင့်မည်
+                    <button type="submit" class="w-full bg-gradient-to-r from-accent to-primary p-3 rounded-lg font-semibold hover:from-accent/80 hover:to-primary/80 transition-all transform hover:scale-105 animate-glow">
+                        အကောင့်ဖွင့်ပါ
                     </button>
                 </form>
             </div>
@@ -286,24 +200,33 @@
     </div>
 
     <!-- Main App Section -->
-    <div id="appSection" class="hidden min-h-screen">
+    <div id="appSection" class="hidden min-h-screen bg-gray-100 flex flex-col">
+        
         <!-- Header -->
-        <header class="sticky top-0 z-40 bg-[rgba(13,12,34,0.8)] backdrop-blur-md p-4 flex items-center justify-between border-b border-b-[var(--border-glow)]">
-            <img src="https://github.com/Opper125/onlinefullshop/blob/27ec68bd95250f633560c60baaad541d29f94f16/logo-dashboard.png?raw=true" 
-                 alt="Logo" class="w-12 h-12 rounded-xl">
-            <h1 class="text-xl font-bold text-gradient">Myanmar E-Shop</h1>
-            <button id="logoutBtn" class="text-red-400 hover:text-red-500 transition-colors">
-                <i class="fas fa-sign-out-alt text-2xl"></i>
-            </button>
+        <header class="glass-effect p-4 mb-6 sticky top-0 z-10">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://github.com/Opper125/onlinefullshop/blob/27ec68bd95250f633560c60baaad541d29f94f16/logo-dashboard.png?raw=true" 
+                         alt="Logo" class="w-12 h-12 rounded-lg">
+                    <h1 class="text-xl font-bold gradient-text">Myanmar E-Shop</h1>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <span id="welcomeUser" class="hidden sm:block text-sm text-gray-300"></span>
+                    <button id="logoutBtn" class="bg-red-500/20 hover:bg-red-500/30 px-4 py-2 rounded-lg transition-all">
+                        <i class="fas fa-sign-out-alt mr-2"></i>ထွက်ရန်
+                    </button>
+                </div>
+            </div>
         </header>
 
         <!-- Page Content -->
-        <main id="pageContent" class="pb-24">
+        <main id="pageContent" class="pb-20 flex-grow">
             <!-- Home Page -->
             <div id="homePage" class="p-4">
-                <div class="page-content-wrapper">
-                    <h2 class="text-3xl font-bold mb-6 text-gradient">ထုတ်ကုန်များ</h2>
-                    <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold mb-4 gradient-text">ထုတ်ကုန်များ</h2>
+                    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         <!-- Products will be loaded here -->
                     </div>
                 </div>
@@ -311,9 +234,9 @@
 
             <!-- History Page -->
             <div id="historyPage" class="p-4 hidden">
-                 <div class="page-content-wrapper">
-                    <h2 class="text-3xl font-bold mb-6 text-gradient">မှာယူမှုမှတ်တမ်းများ</h2>
-                    <div id="ordersHistory" class="space-y-5">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold mb-4 gradient-text">မှာယူမှုမှတ်တမ်းများ</h2>
+                    <div id="ordersHistory" class="space-y-4">
                         <!-- Order history will be loaded here -->
                     </div>
                 </div>
@@ -321,8 +244,8 @@
 
             <!-- News Page -->
             <div id="newsPage" class="p-4 hidden">
-                 <div class="page-content-wrapper">
-                    <h2 class="text-3xl font-bold mb-6 text-gradient">သတင်းများ</h2>
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold mb-4 gradient-text">သတင်းများ</h2>
                     <div id="newsContainer" class="space-y-6">
                         <!-- News will be loaded here -->
                     </div>
@@ -331,24 +254,27 @@
 
             <!-- Profile Page -->
             <div id="profilePage" class="p-4 hidden">
-                <div class="page-content-wrapper">
-                    <h2 class="text-3xl font-bold mb-6 text-gradient">ကိုယ်ရေးအချက်အလက်</h2>
-                    <div class="glass-card p-6">
+                <div class="max-w-md mx-auto">
+                    <h2 class="text-2xl font-bold mb-6 gradient-text">ကိုယ်ရေးအချက်အလက်</h2>
+                    
+                    <div class="glass-effect p-6 rounded-2xl">
                         <form id="profileForm" class="space-y-4">
-                            <!-- Form fields will be dynamically populated -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-400 mb-2">အမည်</label>
-                                <input type="text" id="profileName" class="w-full modern-input">
+                                <label class="block text-sm font-medium mb-2">အမည်</label>
+                                <input type="text" id="profileName" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all">
                             </div>
+                            
                             <div>
-                                <label class="block text-sm font-medium text-gray-400 mb-2">အသုံးပြုသူနာမည်</label>
-                                <input type="text" id="profileUsername" class="w-full modern-input">
+                                <label class="block text-sm font-medium mb-2">အသုံးပြုသူနာမည်</label>
+                                <input type="text" id="profileUsername" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all">
                             </div>
+                            
                             <div>
-                                <label class="block text-sm font-medium text-gray-400 mb-2">အီးမေးလ်</label>
-                                <input type="email" id="profileEmail" class="w-full modern-input">
+                                <label class="block text-sm font-medium mb-2">အီးမေးလ်</label>
+                                <input type="email" id="profileEmail" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all">
                             </div>
-                            <button type="submit" class="w-full btn-glow mt-4">
+                            
+                            <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:from-primary/80 hover:to-secondary/80 transition-all transform hover:scale-105">
                                 အချက်အလက်များ အပ်ဒိတ်လုပ်ပါ
                             </button>
                         </form>
@@ -358,75 +284,98 @@
         </main>
 
         <!-- Bottom Navigation -->
-        <nav class="fixed bottom-0 left-0 right-0 bottom-nav z-40">
-            <div class="flex justify-around max-w-lg mx-auto">
-                <button class="nav-item active text-center p-2" data-page="home">
-                    <i class="fas fa-home text-2xl mb-1 block"></i>
+        <nav class="fixed bottom-0 left-0 right-0 glass-effect p-4 z-10">
+            <div class="flex justify-around">
+                <button class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/10" data-page="home">
+                    <i class="fas fa-home text-lg"></i>
                     <span class="text-xs">ပင်မ</span>
                 </button>
-                <button class="nav-item text-center p-2" data-page="history">
-                    <i class="fas fa-history text-2xl mb-1 block"></i>
+                <button class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/10" data-page="history">
+                    <i class="fas fa-history text-lg"></i>
                     <span class="text-xs">မှတ်တမ်း</span>
                 </button>
-                <button class="nav-item text-center p-2" data-page="news">
-                    <i class="fas fa-newspaper text-2xl mb-1 block"></i>
+                <button class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/10" data-page="news">
+                    <i class="fas fa-newspaper text-lg"></i>
                     <span class="text-xs">သတင်း</span>
                 </button>
-                <button class="nav-item text-center p-2" data-page="profile">
-                    <i class="fas fa-user text-2xl mb-1 block"></i>
+                <button class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/10" data-page="profile">
+                    <i class="fas fa-user text-lg"></i>
                     <span class="text-xs">ပရိုဖိုင်</span>
                 </button>
             </div>
         </nav>
     </div>
 
-    <!-- Modals (All modals use the same glass-card style) -->
-    <div id="productModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden p-4">
-        <div class="glass-card max-w-md w-full max-h-[90vh] overflow-y-auto modal-container">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-gradient">ထုတ်ကုန်အသေးစိတ်</h3>
-                    <button id="closeProductModal" class="text-gray-400 hover:text-white">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <div id="productModalContent"></div>
+    <!-- Product Detail Modal -->
+    <div id="productModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-effect p-6 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">ထုတ်ကုန်အသေးစိတ်</h3>
+                <button id="closeProductModal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="productModalContent">
+                <!-- Product details will be loaded here -->
             </div>
         </div>
     </div>
 
-    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden p-4">
-        <div class="glass-card max-w-md w-full max-h-[90vh] overflow-y-auto modal-container">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-gradient">ငွေပေးချေမှု</h3>
-                    <button id="closePaymentModal" class="text-gray-400 hover:text-white">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <div id="paymentModalContent"></div>
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-effect p-6 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">ငွေပေးချေမှု</h3>
+                <button id="closePaymentModal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="paymentModalContent">
+                <!-- Payment methods will be loaded here -->
             </div>
         </div>
     </div>
 
-    <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden p-4">
-        <div class="glass-card max-w-md w-full modal-container">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-gradient">မှာယူမှုတင်ပြခြင်း</h3>
-                    <button id="closeOrderModal" class="text-gray-400 hover:text-white">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <form id="orderForm" class="space-y-4">
-                    <input type="text" id="orderTelegram" class="w-full modern-input" required placeholder="Telegram Username (@yourusername)">
-                    <input type="text" id="orderTransactionId" class="w-full modern-input" required placeholder="ငွေလွှဲလုပ်ငန်းစဥ်အမှတ်">
-                    <input type="text" id="orderSenderName" class="w-full modern-input" required placeholder="ငွေလွှဲသူအမည်">
-                    <button type="submit" class="w-full btn-glow">
-                        တင်ပြမည်
-                    </button>
-                </form>
+    <!-- Order Submission Modal -->
+    <div id="orderModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-effect p-6 rounded-2xl max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">မှာယူမှုတင်ပြခြင်း</h3>
+                <button id="closeOrderModal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
+            
+            <form id="orderForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Telegram အသုံးပြုသူနာမည်</label>
+                    <input type="text" id="orderTelegram" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required placeholder="@yourusername">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">ငွေလွှဲလုပ်ငန်းစဥ်အမှတ်</label>
+                    <input type="text" id="orderTransactionId" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">ငွေလွှဲသူအမည်</label>
+                    <input type="text" id="orderSenderName" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:from-primary/80 hover:to-secondary/80 transition-all transform hover:scale-105">
+                    မှာယူမှုကို တင်ပြပါ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="fixed top-20 right-4 z-50 space-y-2"></div>
+    
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <div class="glass-effect p-8 rounded-2xl text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="font-semibold">လုပ်ဆောင်နေသည်...</p>
         </div>
     </div>
 
