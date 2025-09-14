@@ -48,9 +48,9 @@ class EShopApp {
         const textElement = document.getElementById('connectionText');
         
         if (connected) {
-            statusElement.className = 'connection-status status-connected';
+            statusElement.style.color = 'var(--primary)';
         } else {
-            statusElement.className = 'connection-status status-disconnected';
+            statusElement.style.color = '#ef4444';
         }
         
         textElement.textContent = message;
@@ -95,16 +95,12 @@ class EShopApp {
         
         if (tab === 'login') {
             loginTab.classList.add('tab-active');
-            loginTab.classList.remove('bg-gray-100');
             signupTab.classList.remove('tab-active');
-            signupTab.classList.add('bg-gray-100');
             loginForm.classList.remove('hidden');
             signupForm.classList.add('hidden');
         } else {
             signupTab.classList.add('tab-active');
-            signupTab.classList.remove('bg-gray-100');
             loginTab.classList.remove('tab-active');
-            loginTab.classList.add('bg-gray-100');
             signupForm.classList.remove('hidden');
             loginForm.classList.add('hidden');
         }
@@ -200,8 +196,9 @@ class EShopApp {
             });
             
             if (createResponse.ok) {
-                const newUser = await createResponse.json();
-                this.currentUser = newUser[0];
+                // Supabase returns the created record in an array
+                const newUsers = await createResponse.json();
+                this.currentUser = newUsers[0];
                 localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
                 this.showMessage('အကောင့်ဖွင့်မှု အောင်မြင်ပါတယ်', 'success');
                 this.showAuthSection(false);
@@ -266,11 +263,16 @@ class EShopApp {
         const container = document.getElementById('messageContainer');
         const messageDiv = document.createElement('div');
         
-        messageDiv.className = `${type}-message p-4 rounded-lg shadow-lg animate-slide-up`;
+        const bgColor = type === 'success' ? 'linear-gradient(90deg, #10b981, #059669)' : 'linear-gradient(90deg, #ef4444, #dc2626)';
+        
+        messageDiv.className = `text-white p-4 rounded-lg shadow-lg w-full max-w-sm`;
+        messageDiv.style.background = bgColor;
+        messageDiv.style.animation = 'slideUp 0.6s ease-out forwards';
+
         messageDiv.innerHTML = `
             <div class="flex items-center">
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>
-                <span>${message}</span>
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-3 text-xl"></i>
+                <span class="flex-1">${message}</span>
                 <button class="ml-4 hover:opacity-75" onclick="this.parentElement.parentElement.remove()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -290,13 +292,11 @@ class EShopApp {
     navigateTo(page) {
         // Update navigation
         document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active', 'text-white');
-            item.classList.add('text-blue-200');
+            item.classList.remove('active');
         });
         
         const activeItem = document.querySelector(`[data-page="${page}"]`);
-        activeItem.classList.add('active', 'text-white');
-        activeItem.classList.remove('text-blue-200');
+        activeItem.classList.add('active');
         
         // Show page
         document.querySelectorAll('#pageContent > div').forEach(pageDiv => {
@@ -337,28 +337,24 @@ class EShopApp {
         if (products.length === 0) {
             container.innerHTML = `
                 <div class="col-span-full text-center py-12">
-                    <i class="fas fa-box-open text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-gray-500 text-lg">ထုတ်ကုန်များ မရှိသေးပါ</p>
+                    <i class="fas fa-box-open text-6xl text-gray-500 mb-4"></i>
+                    <p class="text-gray-400 text-lg">ထုတ်ကုန်များ မရှိသေးပါ</p>
                 </div>
             `;
             return;
         }
         
-        container.innerHTML = products.map(product => {
-            const contactInfo = typeof product.contact_info === 'string' 
-                ? JSON.parse(product.contact_info || '{}') 
-                : product.contact_info || {};
-            
+        container.innerHTML = products.map((product, index) => {
             return `
-                <div class="bg-white rounded-2xl card-shadow product-card overflow-hidden">
-                    <img src="${product.icon_url || 'https://via.placeholder.com/300x200/e2e8f0/64748b?text=No+Image'}" 
+                <div class="glass-card product-card overflow-hidden" style="animation-delay: ${index * 100}ms" onclick="app.viewProduct('${product.id}')">
+                    <img src="${product.icon_url || 'https://placehold.co/600x400/0d0c22/e0e0e0?text=No+Image'}" 
                          alt="${product.name}" class="w-full h-48 object-cover">
                     <div class="p-4">
-                        <h3 class="font-bold text-lg text-gray-800 mb-2">${product.name}</h3>
-                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description}</p>
+                        <h3 class="font-bold text-lg text-white mb-2 truncate">${product.name}</h3>
+                        <p class="text-gray-400 text-sm mb-3 h-10 overflow-hidden">${product.description}</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold text-blue-600">${product.price} ကျပ်</span>
-                            <button onclick="app.viewProduct('${product.id}')" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
+                            <span class="text-2xl font-bold text-gradient">${product.price} ကျပ်</span>
+                            <button class="bg-[var(--primary)] text-[var(--bg-dark)] px-4 py-2 rounded-lg text-sm font-semibold">
                                 ကြည့်ရှုမည်
                             </button>
                         </div>
@@ -396,20 +392,20 @@ class EShopApp {
             : this.selectedProduct.contact_info || {};
         
         content.innerHTML = `
-            <img src="${this.selectedProduct.icon_url || 'https://via.placeholder.com/400x300/e2e8f0/64748b?text=No+Image'}" 
+            <img src="${this.selectedProduct.icon_url || 'https://placehold.co/600x400/0d0c22/e0e0e0?text=No+Image'}" 
                  alt="${this.selectedProduct.name}" class="w-full h-64 object-cover rounded-lg mb-4">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">${this.selectedProduct.name}</h3>
-            <p class="text-gray-600 mb-4">${this.selectedProduct.description}</p>
+            <h3 class="text-2xl font-bold text-white mb-2">${this.selectedProduct.name}</h3>
+            <p class="text-gray-300 mb-4">${this.selectedProduct.description}</p>
             <div class="flex items-center justify-between mb-4">
-                <span class="text-2xl font-bold text-blue-600">${this.selectedProduct.price} ကျပ်</span>
+                <span class="text-3xl font-bold text-gradient">${this.selectedProduct.price} ကျပ်</span>
                 ${contactInfo.telegram ? `
-                    <a href="${contactInfo.telegram}" target="_blank" class="text-blue-500 hover:text-blue-700">
+                    <a href="${contactInfo.telegram}" target="_blank" class="text-[var(--primary)] hover:opacity-80 transition-opacity">
                         <i class="fab fa-telegram text-xl mr-1"></i>
                         ဆက်သွယ်ပါ
                     </a>
                 ` : ''}
             </div>
-            <button onclick="app.buyProduct()" class="w-full btn-primary text-white py-3 rounded-lg font-medium">
+            <button onclick="app.buyProduct()" class="w-full btn-glow mt-2">
                 ဝယ်ယူမည်
             </button>
         `;
@@ -446,22 +442,22 @@ class EShopApp {
         if (this.paymentMethods.length === 0) {
             content.innerHTML = `
                 <div class="text-center py-8">
-                    <i class="fas fa-credit-card text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-gray-500">ငွေပေးချေမှုနည်းလမ်းများ မရှိသေးပါ</p>
+                    <i class="fas fa-credit-card text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400">ငွေပေးချေမှုနည်းလမ်းများ မရှိသေးပါ</p>
                 </div>
             `;
         } else {
             content.innerHTML = `
-                <h4 class="text-lg font-semibold mb-4">ငွေပေးချေမှုနည်းလမ်းရွေးချယ်ပါ</h4>
+                <h4 class="text-lg font-semibold mb-4 text-center">ငွေပေးချေမှုနည်းလမ်းရွေးချယ်ပါ</h4>
                 <div class="space-y-3">
                     ${this.paymentMethods.map(method => `
-                        <div class="border rounded-lg p-4 cursor-pointer hover:border-blue-500 payment-method" onclick="app.selectPaymentMethod('${method.id}')">
+                        <div class="glass-card !bg-opacity-20 p-4 cursor-pointer hover:border-[var(--primary)]" onclick="app.selectPaymentMethod('${method.id}')">
                             <div class="flex items-center">
-                                <img src="${method.icon_url || 'https://via.placeholder.com/40x40/e2e8f0/64748b?text=Pay'}" 
-                                     alt="${method.name}" class="w-10 h-10 rounded-lg mr-3">
+                                <img src="${method.icon_url || 'https://placehold.co/40x40/1d1b3e/e0e0e0?text=P'}" 
+                                     alt="${method.name}" class="w-10 h-10 rounded-lg mr-4">
                                 <div>
-                                    <p class="font-medium">${method.name}</p>
-                                    <p class="text-sm text-gray-500">${method.description}</p>
+                                    <p class="font-medium text-white">${method.name}</p>
+                                    <p class="text-sm text-gray-400">${method.description}</p>
                                 </div>
                             </div>
                         </div>
@@ -483,30 +479,26 @@ class EShopApp {
         
         content.innerHTML = `
             <div class="text-center">
-                <img src="${this.selectedPaymentMethod.icon_url}" alt="${this.selectedPaymentMethod.name}" class="w-16 h-16 rounded-lg mx-auto mb-4">
+                <img src="${this.selectedPaymentMethod.icon_url}" alt="${this.selectedPaymentMethod.name}" class="w-16 h-16 rounded-lg mx-auto mb-4 p-1 border-2 border-[var(--primary)]">
                 <h4 class="text-xl font-semibold mb-2">${this.selectedPaymentMethod.name}</h4>
-                <p class="text-gray-600 mb-4">${this.selectedPaymentMethod.description}</p>
+                <p class="text-gray-400 mb-4">${this.selectedPaymentMethod.description}</p>
                 
-                <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                    <p class="text-sm text-gray-600 mb-2">ငွေလွှဲရမည့်လိပ်စာ:</p>
-                    <p class="font-mono text-lg font-semibold">${this.selectedPaymentMethod.address}</p>
+                <div class="bg-black bg-opacity-20 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-gray-400 mb-2">ငွေလွှဲရမည့်လိပ်စာ:</p>
+                    <p class="font-mono text-lg font-semibold text-white">${this.selectedPaymentMethod.address}</p>
                 </div>
                 
                 ${this.selectedPaymentMethod.qr_code_url ? `
                     <div class="mb-4">
-                        <p class="text-sm text-gray-600 mb-2">QR ကုဒ်:</p>
-                        <img src="${this.selectedPaymentMethod.qr_code_url}" alt="QR Code" class="w-48 h-48 mx-auto border rounded-lg">
+                        <img src="${this.selectedPaymentMethod.qr_code_url}" alt="QR Code" class="w-48 h-48 mx-auto border-4 border-white rounded-lg">
                     </div>
                 ` : ''}
                 
-                <div class="bg-blue-50 rounded-lg p-4 mb-4">
-                    <p class="text-sm text-blue-800">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        ငွေပေးချေမှုပြီးပါက အောက်ပါခလုပ်ကို နှိပ်ပြီး မှာယူမှုတင်ပြပါ
-                    </p>
+                <div class="bg-blue-900 bg-opacity-30 rounded-lg p-4 mb-4 text-blue-200">
+                     <i class="fas fa-info-circle mr-2"></i>ငွေပေးချေမှုပြီးပါက အောက်ပါခလုပ်ကို နှိပ်ပြီး မှာယူမှုတင်ပြပါ
                 </div>
                 
-                <button onclick="app.proceedToOrder()" class="w-full btn-primary text-white py-3 rounded-lg font-medium">
+                <button onclick="app.proceedToOrder()" class="w-full btn-glow">
                     မှာယူမှုတင်ပြမည်
                 </button>
             </div>
@@ -527,7 +519,6 @@ class EShopApp {
         const senderName = document.getElementById('orderSenderName').value;
         
         try {
-            // Generate order number
             const orderNumber = 'OPPER' + Math.floor(Math.random() * 99999999 + 1).toString().padStart(8, '0');
             
             const response = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
@@ -588,67 +579,75 @@ class EShopApp {
         if (orders.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-12">
-                    <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-gray-500 text-lg">မှာယူမှုမှတ်တမ်းများ မရှိသေးပါ</p>
+                    <i class="fas fa-shopping-cart text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400 text-lg">မှာယူမှုမှတ်တမ်းများ မရှိသေးပါ</p>
                 </div>
             `;
             return;
         }
         
-        container.innerHTML = orders.map(order => `
-            <div class="bg-white rounded-2xl card-shadow p-6">
-                <div class="flex items-center justify-between mb-4">
+        container.innerHTML = orders.map((order, index) => {
+            const statusStyles = {
+                confirmed: 'bg-green-500/20 text-green-300',
+                rejected: 'bg-red-500/20 text-red-300',
+                pending: 'bg-yellow-500/20 text-yellow-300',
+            };
+            const statusText = {
+                confirmed: 'အတည်ပြုပြီး',
+                rejected: 'ငြင်းဆိုထား',
+                pending: 'စောင့်ဆိုင်းနေ',
+            }
+
+            return `
+            <div class="glass-card history-card p-6" style="animation-delay: ${index * 100}ms">
+                <div class="flex items-start justify-between mb-4">
                     <div>
-                        <p class="font-semibold text-lg">Order #${order.order_number}</p>
-                        <p class="text-sm text-gray-500">${new Date(order.created_at).toLocaleDateString('my-MM')}</p>
+                        <p class="font-semibold text-lg text-white">Order #${order.order_number}</p>
+                        <p class="text-sm text-gray-400">${new Date(order.created_at).toLocaleDateString('my-MM')}</p>
                     </div>
-                    <span class="px-3 py-1 rounded-full text-sm font-medium ${
-                        order.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                        order.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                    }">
-                        ${order.status === 'confirmed' ? 'အတည်ပြုပြီး' : 
-                          order.status === 'rejected' ? 'ငြင်းဆိုထား' : 'စောင့်ဆိုင်းနေ'}
+                    <span class="px-3 py-1 rounded-full text-xs font-medium ${statusStyles[order.status] || statusStyles.pending}">
+                        ${statusText[order.status] || statusText.pending}
                     </span>
                 </div>
                 
                 ${order.products ? `
-                    <div class="flex items-center mb-4">
-                        <img src="${order.products.icon_url || 'https://via.placeholder.com/60x60'}" 
-                             alt="${order.products.name}" class="w-15 h-15 rounded-lg mr-4">
+                    <div class="flex items-center mb-4 p-3 bg-black bg-opacity-20 rounded-lg">
+                        <img src="${order.products.icon_url || 'https://placehold.co/60x60/1d1b3e/e0e0e0?text=P'}" 
+                             alt="${order.products.name}" class="w-12 h-12 rounded-lg mr-4">
                         <div>
-                            <p class="font-medium">${order.products.name}</p>
-                            <p class="text-blue-600 font-semibold">${order.products.price} ကျပ်</p>
+                            <p class="font-medium text-white">${order.products.name}</p>
+                            <p class="text-gradient font-semibold">${order.products.price} ကျပ်</p>
                         </div>
                     </div>
                 ` : ''}
                 
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                        <p class="text-gray-500">Telegram:</p>
-                        <p class="font-medium">${order.buyer_telegram}</p>
+                        <p class="text-gray-400">Telegram:</p>
+                        <p class="font-medium text-white">${order.buyer_telegram}</p>
                     </div>
                     <div>
-                        <p class="text-gray-500">Transaction ID:</p>
-                        <p class="font-medium">${order.transaction_id}</p>
+                        <p class="text-gray-400">Transaction ID:</p>
+                        <p class="font-medium text-white break-all">${order.transaction_id}</p>
                     </div>
                 </div>
                 
                 ${order.status === 'confirmed' ? `
                     <div class="mt-4">
-                        <button onclick="app.downloadOrderPDF('${order.id}')" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
+                        <button onclick="app.downloadOrderPDF('${order.id}')" class="btn-glow !py-2 !px-4 !text-sm w-full">
                             <i class="fas fa-download mr-1"></i>
                             Order List ဒေါင်းလုဒ်လုပ်ပါ
                         </button>
                     </div>
                 ` : ''}
             </div>
-        `).join('');
+        `}).join('');
     }
 
     async downloadOrderPDF(orderId) {
+        // This function remains unchanged as it's logic-based.
+        // jsPDF styling would be a much larger task.
         try {
-            // Get order details
             const response = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=*,products(*),payment_methods(*)`, {
                 headers: {
                     'apikey': SUPABASE_ANON_KEY,
@@ -666,30 +665,27 @@ class EShopApp {
     }
 
     generateOrderPDF(order) {
+        // This function remains unchanged.
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Header
         doc.setFontSize(20);
         doc.text('Myanmar E-Shop', 20, 30);
         doc.setFontSize(16);
         doc.text('Order Receipt', 20, 45);
         
-        // Order details
         doc.setFontSize(12);
         doc.text(`Order Number: ${order.order_number}`, 20, 65);
         doc.text(`Date: ${new Date(order.created_at).toLocaleDateString()}`, 20, 75);
         doc.text(`Customer: ${this.currentUser.name}`, 20, 85);
         doc.text(`Email: ${this.currentUser.email}`, 20, 95);
         
-        // Product details
         if (order.products) {
             doc.text('Product Details:', 20, 115);
             doc.text(`Name: ${order.products.name}`, 30, 125);
             doc.text(`Price: ${order.products.price} MMK`, 30, 135);
         }
         
-        // Payment details
         if (order.payment_methods) {
             doc.text('Payment Method:', 20, 155);
             doc.text(`Method: ${order.payment_methods.name}`, 30, 165);
@@ -697,11 +693,9 @@ class EShopApp {
             doc.text(`Sender: ${order.sender_name}`, 30, 185);
         }
         
-        // Footer
         doc.text('Thank you for your purchase!', 20, 220);
         doc.text('Myanmar E-Shop - Online Shopping Platform', 20, 230);
         
-        // Download
         doc.save(`Order-${order.order_number}.pdf`);
     }
 
@@ -727,14 +721,14 @@ class EShopApp {
         if (news.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-12">
-                    <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-gray-500 text-lg">သတင်းများ မရှိသေးပါ</p>
+                    <i class="fas fa-newspaper text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400 text-lg">သတင်းများ မရှိသေးပါ</p>
                 </div>
             `;
             return;
         }
         
-        container.innerHTML = news.map(item => {
+        container.innerHTML = news.map((item, index) => {
             const contactInfo = typeof item.contact_info === 'string' 
                 ? JSON.parse(item.contact_info || '{}') 
                 : item.contact_info || {};
@@ -742,13 +736,13 @@ class EShopApp {
             const images = Array.isArray(item.images) ? item.images : [];
             
             return `
-                <div class="bg-white rounded-2xl card-shadow p-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-3">${item.title}</h3>
+                <div class="glass-card news-card p-6" style="animation-delay: ${index * 100}ms">
+                    <h3 class="text-xl font-bold text-white mb-3">${item.title}</h3>
                     
                     ${item.video_url ? `
-                        <div class="mb-4">
+                        <div class="mb-4 aspect-w-16 aspect-h-9">
                             <iframe src="${item.video_url.replace('watch?v=', 'embed/')}" 
-                                    width="100%" height="315" frameborder="0" allowfullscreen class="rounded-lg">
+                                    frameborder="0" allowfullscreen class="rounded-lg w-full h-full">
                             </iframe>
                         </div>
                     ` : ''}
@@ -761,12 +755,12 @@ class EShopApp {
                         </div>
                     ` : ''}
                     
-                    <p class="text-gray-600 mb-4">${item.content}</p>
+                    <p class="text-gray-300 mb-4">${item.content}</p>
                     
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">${new Date(item.created_at).toLocaleDateString('my-MM')}</span>
+                        <span class="text-sm text-gray-400">${new Date(item.created_at).toLocaleDateString('my-MM')}</span>
                         ${contactInfo.telegram ? `
-                            <a href="${contactInfo.telegram}" target="_blank" class="text-blue-500 hover:text-blue-700">
+                            <a href="${contactInfo.telegram}" target="_blank" class="text-[var(--primary)] hover:opacity-80 transition-opacity">
                                 <i class="fab fa-telegram mr-1"></i>
                                 ဆက်သွယ်ပါ
                             </a>
@@ -792,7 +786,6 @@ class EShopApp {
         const email = document.getElementById('profileEmail').value;
         
         try {
-            // Check if new username/email already exists (excluding current user)
             const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/users?and=(or(email.eq.${email},username.eq.${username}),id.neq.${this.currentUser.id})`, {
                 headers: {
                     'apikey': SUPABASE_ANON_KEY,
@@ -813,7 +806,6 @@ class EShopApp {
                 return;
             }
             
-            // Update user profile
             const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${this.currentUser.id}`, {
                 method: 'PATCH',
                 headers: {
@@ -830,7 +822,9 @@ class EShopApp {
             });
             
             if (updateResponse.ok) {
-                this.currentUser = { ...this.currentUser, name, username, email };
+                // Supabase returns the updated record in an array
+                const updatedUsers = await updateResponse.json();
+                this.currentUser = updatedUsers[0];
                 localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
                 this.showMessage('ကိုယ်ရေးအချက်အလက်များ အပ်ဒိတ်လုပ်ပြီးပါပြီ', 'success');
             } else {
@@ -851,3 +845,4 @@ class EShopApp {
 
 // Initialize app
 const app = new EShopApp();
+
