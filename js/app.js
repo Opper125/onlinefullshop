@@ -409,31 +409,103 @@ class EShopApp {
         document.getElementById(modalId).classList.add('hidden');
     }
 
-    // Unchanged PDF generation logic
     async downloadOrderPDF(orderId) {
+        this.showLoading(true);
         try {
             const response = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=*,products(*),payment_methods(*)`, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }});
             const orders = await response.json();
-            if (orders.length > 0) this.generateOrderPDF(orders[0]);
-        } catch (error) { console.error('Error downloading PDF:', error); }
+            if (orders.length > 0) {
+                await this.generateStyledPDF(orders[0]);
+            }
+        } catch (error) {
+            console.error('Error downloading PDF:', error);
+            this.showMessage('PDF ဒေါင်းလုဒ်လုပ်ရာတွင် အမှားအယွင်းเกิดขึ้น', 'error');
+        }
+        this.showLoading(false);
     }
-    generateOrderPDF(order) {
-        const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.setFontSize(20); doc.text('Myanmar E-Shop', 20, 30);
-        doc.setFontSize(16); doc.text('Order Receipt', 20, 45);
-        doc.setFontSize(12);
-        doc.text(`Order Number: ${order.order_number}`, 20, 65);
-        doc.text(`Date: ${new Date(order.created_at).toLocaleDateString()}`, 20, 75);
-        doc.text(`Customer: ${this.currentUser.name}`, 20, 85);
-        doc.text(`Email: ${this.currentUser.email}`, 20, 95);
-        if (order.products) {
-            doc.text('Product Details:', 20, 115); doc.text(`Name: ${order.products.name}`, 30, 125); doc.text(`Price: ${order.products.price} MMK`, 30, 135);
+
+    async generateStyledPDF(order) {
+        const { jsPDF } = window.jspdf;
+        const html2canvas = window.html2canvas;
+        const logoUrl = 'https://raw.githubusercontent.com/Opper125/onlinefullshop/c231d973ce84d2ac8cc97697de5564ea6e3acf05/MAFIA.png';
+
+        const slipElement = document.createElement('div');
+        slipElement.id = 'pdf-slip';
+        slipElement.style.position = 'absolute';
+        slipElement.style.left = '-9999px';
+        slipElement.style.width = '800px';
+        slipElement.style.fontFamily = "'Noto Sans Myanmar', sans-serif";
+        slipElement.style.color = '#1a1a1a';
+        slipElement.style.background = 'white';
+        slipElement.innerHTML = `
+            <div style="padding: 40px; background-image: linear-gradient(45deg, #f7258510, #7209b710);">
+                <header style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f2f5; padding-bottom: 20px;">
+                    <div>
+                        <h1 style="font-size: 28px; font-weight: 700; margin: 0; color: #7209b7;">Myanmar E-Shop</h1>
+                        <p style="margin: 0; color: #555;">Order Receipt / မှာယူမှုပြေစာ</p>
+                    </div>
+                    <img src="${logoUrl}" style="width: 100px; height: 100px;" crossorigin="anonymous" />
+                </header>
+                
+                <main style="margin-top: 30px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+                        <div>
+                            <p style="margin: 0 0 5px 0; color: #888;">မှာယူသူ:</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 18px;">${this.currentUser.name}</p>
+                            <p style="margin: 0; color: #555;">${this.currentUser.email}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="margin: 0 0 5px 0; color: #888;">Order Number:</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 18px;">#${order.order_number}</p>
+                            <p style="margin: 0; color: #555;">${new Date(order.created_at).toLocaleDateString('en-GB')}</p>
+                        </div>
+                    </div>
+
+                    <h2 style="font-size: 18px; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 15px;">မှာယူထားသော ပစ္စည်းအချက်အလက်</h2>
+                    <div style="background: #f0f2f5; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 20px;">
+                        <img src="${order.products.icon_url}" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;" crossorigin="anonymous" />
+                        <div style="flex-grow: 1;">
+                            <p style="margin: 0; font-weight: 600; font-size: 18px;">${order.products.name}</p>
+                            <p style="margin: 0; color: #555; font-size: 14px;">${order.products.description}</p>
+                        </div>
+                        <p style="margin: 0; font-size: 22px; font-weight: 700; background: -webkit-linear-gradient(45deg, #f72585, #7209b7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${order.products.price} ကျပ်</p>
+                    </div>
+
+                    <h2 style="font-size: 18px; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 15px; margin-top: 30px;">ငွေပေးချေမှု အချက်အလက်</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #888;">Payment Method:</td><td style="text-align: right; font-weight: 600;">${order.payment_methods.name}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #888;">Telegram Username:</td><td style="text-align: right; font-weight: 600;">${order.buyer_telegram}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; color: #888;">Sender Name:</td><td style="text-align: right; font-weight: 600;">${order.sender_name}</td></tr>
+                        <tr><td style="padding: 10px 0; color: #888;">Transaction ID:</td><td style="text-align: right; font-weight: 600;">${order.transaction_id}</td></tr>
+                    </table>
+                </main>
+
+                <footer style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #f0f2f5;">
+                    <p style="margin: 0; color: #888;">ဝယ်ယူအားပေးမှုအတွက် ကျေးဇူးတင်ပါသည်။</p>
+                    <p style="margin: 5px 0 0 0; color: #aaa; font-size: 12px;">Generated on ${new Date().toLocaleString()}</p>
+                </footer>
+            </div>
+        `;
+        document.body.appendChild(slipElement);
+
+        try {
+            const canvas = await html2canvas(slipElement, { useCORS: true, scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
+            
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [canvas.width, canvas.height]
+            });
+
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save(`Order-${order.order_number}.pdf`);
+        } catch(err) {
+            console.error("PDF generation failed:", err);
+            this.showMessage("PDF ဖန်တီးရာတွင် အမှားအယွင်းရှိနေပါသည်။", "error");
+        } finally {
+            document.body.removeChild(slipElement);
         }
-        if (order.payment_methods) {
-            doc.text('Payment Method:', 20, 155); doc.text(`Method: ${order.payment_methods.name}`, 30, 165); doc.text(`Transaction ID: ${order.transaction_id}`, 30, 175); doc.text(`Sender: ${order.sender_name}`, 30, 185);
-        }
-        doc.text('Thank you for your purchase!', 20, 220);
-        doc.save(`Order-${order.order_number}.pdf`);
     }
 }
 
