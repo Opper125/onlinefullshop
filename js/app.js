@@ -45,20 +45,15 @@ class EShopApp {
 
     updateConnectionStatus(connected, message) {
         const statusElement = document.getElementById('connectionStatus');
-        const textElement = document.getElementById('statusContent');
+        const textElement = document.getElementById('connectionText');
         
         if (connected) {
-            statusElement.className = 'fixed top-0 left-0 right-0 z-50 p-3 text-center text-sm font-medium bg-green-500 text-white transition-all duration-300';
-            textElement.innerHTML = `<i class="fas fa-check-circle"></i><span>${message}</span>`;
+            statusElement.className = 'connection-status status-connected';
         } else {
-            statusElement.className = 'fixed top-0 left-0 right-0 z-50 p-3 text-center text-sm font-medium bg-red-500 text-white transition-all duration-300';
-            textElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i><span>${message}</span>`;
+            statusElement.className = 'connection-status status-disconnected';
         }
         
-        // Hide after 3 seconds
-        setTimeout(() => {
-            statusElement.classList.add('opacity-0', 'pointer-events-none');
-        }, 3000);
+        textElement.textContent = message;
     }
 
     // Event Listeners Setup
@@ -72,7 +67,7 @@ class EShopApp {
         document.getElementById('signupForm').addEventListener('submit', (e) => this.handleSignup(e));
         
         // Navigation
-        document.querySelectorAll('.nav-btn').forEach(item => {
+        document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => this.navigateTo(item.dataset.page));
         });
         
@@ -99,17 +94,17 @@ class EShopApp {
         const signupForm = document.getElementById('signupForm');
         
         if (tab === 'login') {
-            loginTab.classList.add('bg-primary/20');
-            loginTab.classList.remove('bg-gray-100/10');
-            signupTab.classList.remove('bg-primary/20');
-            signupTab.classList.add('bg-gray-100/10');
+            loginTab.classList.add('tab-active');
+            loginTab.classList.remove('bg-gray-100');
+            signupTab.classList.remove('tab-active');
+            signupTab.classList.add('bg-gray-100');
             loginForm.classList.remove('hidden');
             signupForm.classList.add('hidden');
         } else {
-            signupTab.classList.add('bg-primary/20');
-            signupTab.classList.remove('bg-gray-100/10');
-            loginTab.classList.remove('bg-primary/20');
-            loginTab.classList.add('bg-gray-100/10');
+            signupTab.classList.add('tab-active');
+            signupTab.classList.remove('bg-gray-100');
+            loginTab.classList.remove('tab-active');
+            loginTab.classList.add('bg-gray-100');
             signupForm.classList.remove('hidden');
             loginForm.classList.add('hidden');
         }
@@ -241,7 +236,7 @@ class EShopApp {
         this.currentUser = null;
         localStorage.removeItem('currentUser');
         this.showAuthSection(true);
-        this.showMessage('အကောင့်မှ ထွက်ခွာပြီးပါပြီ', 'success');
+        this.showMessage('အကောင့်မှ ထွက်ခွာပြီးပါပြီ်', 'success');
     }
 
     // UI Functions
@@ -271,28 +266,12 @@ class EShopApp {
         const container = document.getElementById('messageContainer');
         const messageDiv = document.createElement('div');
         
-        let bgColor = '';
-        let icon = '';
-        let borderColor = '';
-        
-        if (type === 'success') {
-            bgColor = 'bg-green-500';
-            icon = 'fa-check-circle';
-            borderColor = 'border-green-500';
-        } else {
-            bgColor = 'bg-red-500';
-            icon = 'fa-exclamation-circle';
-            borderColor = 'border-red-500';
-        }
-        
-        messageDiv.className = `glass-effect p-4 rounded-lg border-l-4 ${borderColor} max-w-sm animate-fadeIn`;
+        messageDiv.className = `${type}-message p-4 rounded-lg shadow-lg animate-slide-up`;
         messageDiv.innerHTML = `
             <div class="flex items-center">
-                <i class="fas ${icon} mr-3 text-lg text-white"></i>
-                <div class="text-white">
-                    <p class="font-semibold">${message}</p>
-                </div>
-                <button class="ml-auto text-gray-400 hover:text-white" onclick="this.closest('.glass-effect').remove()">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>
+                <span>${message}</span>
+                <button class="ml-4 hover:opacity-75" onclick="this.parentElement.parentElement.remove()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -307,16 +286,17 @@ class EShopApp {
         }, 5000);
     }
 
-
     // Navigation
     navigateTo(page) {
         // Update navigation
-        document.querySelectorAll('.nav-btn').forEach(item => {
-            item.classList.remove('active');
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active', 'text-white');
+            item.classList.add('text-blue-200');
         });
         
         const activeItem = document.querySelector(`[data-page="${page}"]`);
-        activeItem.classList.add('active');
+        activeItem.classList.add('active', 'text-white');
+        activeItem.classList.remove('text-blue-200');
         
         // Show page
         document.querySelectorAll('#pageContent > div').forEach(pageDiv => {
@@ -370,15 +350,15 @@ class EShopApp {
                 : product.contact_info || {};
             
             return `
-                <div class="bg-gray-800 rounded-2xl p-4 card-hover overflow-hidden">
-                    <img src="${product.icon_url || 'https://via.placeholder.com/300x200/1f2937/9ca3af?text=No+Image'}" 
-                         alt="${product.name}" class="w-full h-48 object-cover rounded-xl mb-4">
-                    <div class="p-2">
-                        <h3 class="font-bold text-lg text-white mb-2">${product.name}</h3>
-                        <p class="text-gray-400 text-sm mb-3 line-clamp-2">${product.description}</p>
+                <div class="bg-white rounded-2xl card-shadow product-card overflow-hidden">
+                    <img src="${product.icon_url || 'https://via.placeholder.com/300x200/e2e8f0/64748b?text=No+Image'}" 
+                         alt="${product.name}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description}</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold text-accent">${product.price} <span class="currency-symbol">ကျပ်</span></span>
-                            <button onclick="app.viewProduct('${product.id}')" class="bg-primary/20 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/40 transition-all">
+                            <span class="text-2xl font-bold text-blue-600">${product.price} ကျပ်</span>
+                            <button onclick="app.viewProduct('${product.id}')" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
                                 ကြည့်ရှုမည်
                             </button>
                         </div>
@@ -416,20 +396,20 @@ class EShopApp {
             : this.selectedProduct.contact_info || {};
         
         content.innerHTML = `
-            <img src="${this.selectedProduct.icon_url || 'https://via.placeholder.com/400x300/1f2937/9ca3af?text=No+Image'}" 
+            <img src="${this.selectedProduct.icon_url || 'https://via.placeholder.com/400x300/e2e8f0/64748b?text=No+Image'}" 
                  alt="${this.selectedProduct.name}" class="w-full h-64 object-cover rounded-lg mb-4">
-            <h3 class="text-xl font-bold text-white mb-2">${this.selectedProduct.name}</h3>
-            <p class="text-gray-400 mb-4">${this.selectedProduct.description}</p>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">${this.selectedProduct.name}</h3>
+            <p class="text-gray-600 mb-4">${this.selectedProduct.description}</p>
             <div class="flex items-center justify-between mb-4">
-                <span class="text-2xl font-bold text-accent">${this.selectedProduct.price} <span class="currency-symbol">ကျပ်</span></span>
+                <span class="text-2xl font-bold text-blue-600">${this.selectedProduct.price} ကျပ်</span>
                 ${contactInfo.telegram ? `
-                    <a href="${contactInfo.telegram}" target="_blank" class="text-accent hover:underline">
+                    <a href="${contactInfo.telegram}" target="_blank" class="text-blue-500 hover:text-blue-700">
                         <i class="fab fa-telegram text-xl mr-1"></i>
                         ဆက်သွယ်ပါ
                     </a>
                 ` : ''}
             </div>
-            <button onclick="app.buyProduct()" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg font-medium hover:from-primary/80 hover:to-secondary/80 transition-all">
+            <button onclick="app.buyProduct()" class="w-full btn-primary text-white py-3 rounded-lg font-medium">
                 ဝယ်ယူမည်
             </button>
         `;
@@ -466,22 +446,22 @@ class EShopApp {
         if (this.paymentMethods.length === 0) {
             content.innerHTML = `
                 <div class="text-center py-8">
-                    <i class="fas fa-credit-card text-6xl text-gray-600 mb-4"></i>
-                    <p class="text-gray-400">ငွေပေးချေမှုနည်းလမ်းများ မရှိသေးပါ</p>
+                    <i class="fas fa-credit-card text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">ငွေပေးချေမှုနည်းလမ်းများ မရှိသေးပါ</p>
                 </div>
             `;
         } else {
             content.innerHTML = `
-                <h4 class="text-lg font-semibold mb-4 text-white">ငွေပေးချေမှုနည်းလမ်းရွေးချယ်ပါ</h4>
+                <h4 class="text-lg font-semibold mb-4">ငွေပေးချေမှုနည်းလမ်းရွေးချယ်ပါ</h4>
                 <div class="space-y-3">
                     ${this.paymentMethods.map(method => `
-                        <div class="bg-gray-800 rounded-lg p-4 cursor-pointer hover:bg-gray-700 transition-all" onclick="app.selectPaymentMethod('${method.id}')">
+                        <div class="border rounded-lg p-4 cursor-pointer hover:border-blue-500 payment-method" onclick="app.selectPaymentMethod('${method.id}')">
                             <div class="flex items-center">
-                                <img src="${method.icon_url || 'https://via.placeholder.com/40x40/1f2937/9ca3af?text=Pay'}" 
+                                <img src="${method.icon_url || 'https://via.placeholder.com/40x40/e2e8f0/64748b?text=Pay'}" 
                                      alt="${method.name}" class="w-10 h-10 rounded-lg mr-3">
                                 <div>
-                                    <p class="font-medium text-white">${method.name}</p>
-                                    <p class="text-sm text-gray-400">${method.description}</p>
+                                    <p class="font-medium">${method.name}</p>
+                                    <p class="text-sm text-gray-500">${method.description}</p>
                                 </div>
                             </div>
                         </div>
@@ -504,29 +484,29 @@ class EShopApp {
         content.innerHTML = `
             <div class="text-center">
                 <img src="${this.selectedPaymentMethod.icon_url}" alt="${this.selectedPaymentMethod.name}" class="w-16 h-16 rounded-lg mx-auto mb-4">
-                <h4 class="text-xl font-semibold mb-2 text-white">${this.selectedPaymentMethod.name}</h4>
-                <p class="text-gray-400 mb-4">${this.selectedPaymentMethod.description}</p>
+                <h4 class="text-xl font-semibold mb-2">${this.selectedPaymentMethod.name}</h4>
+                <p class="text-gray-600 mb-4">${this.selectedPaymentMethod.description}</p>
                 
-                <div class="bg-gray-800 rounded-lg p-4 mb-4">
-                    <p class="text-sm text-gray-400 mb-2">ငွေလွှဲရမည့်လိပ်စာ:</p>
-                    <p class="font-mono text-lg font-semibold text-white">${this.selectedPaymentMethod.address}</p>
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-gray-600 mb-2">ငွေလွှဲရမည့်လိပ်စာ:</p>
+                    <p class="font-mono text-lg font-semibold">${this.selectedPaymentMethod.address}</p>
                 </div>
                 
                 ${this.selectedPaymentMethod.qr_code_url ? `
                     <div class="mb-4">
-                        <p class="text-sm text-gray-400 mb-2">QR ကုဒ်:</p>
-                        <img src="${this.selectedPaymentMethod.qr_code_url}" alt="QR Code" class="w-48 h-48 mx-auto border border-gray-700 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-2">QR ကုဒ်:</p>
+                        <img src="${this.selectedPaymentMethod.qr_code_url}" alt="QR Code" class="w-48 h-48 mx-auto border rounded-lg">
                     </div>
                 ` : ''}
                 
-                <div class="bg-blue-800/20 rounded-lg p-4 mb-4">
-                    <p class="text-sm text-blue-300">
+                <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-blue-800">
                         <i class="fas fa-info-circle mr-1"></i>
                         ငွေပေးချေမှုပြီးပါက အောက်ပါခလုပ်ကို နှိပ်ပြီး မှာယူမှုတင်ပြပါ
                     </p>
                 </div>
                 
-                <button onclick="app.proceedToOrder()" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg font-medium hover:from-primary/80 hover:to-secondary/80 transition-all">
+                <button onclick="app.proceedToOrder()" class="w-full btn-primary text-white py-3 rounded-lg font-medium">
                     မှာယူမှုတင်ပြမည်
                 </button>
             </div>
@@ -608,24 +588,24 @@ class EShopApp {
         if (orders.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-12">
-                    <i class="fas fa-shopping-cart text-6xl text-gray-600 mb-4"></i>
-                    <p class="text-gray-400 text-lg">မှာယူမှုမှတ်တမ်းများ မရှိသေးပါ</p>
+                    <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500 text-lg">မှာယူမှုမှတ်တမ်းများ မရှိသေးပါ</p>
                 </div>
             `;
             return;
         }
         
         container.innerHTML = orders.map(order => `
-            <div class="glass-effect rounded-2xl p-6 mb-4">
+            <div class="bg-white rounded-2xl card-shadow p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <p class="font-semibold text-lg">Order #${order.order_number}</p>
-                        <p class="text-sm text-gray-400">${new Date(order.created_at).toLocaleDateString('my-MM')}</p>
+                        <p class="text-sm text-gray-500">${new Date(order.created_at).toLocaleDateString('my-MM')}</p>
                     </div>
                     <span class="px-3 py-1 rounded-full text-sm font-medium ${
-                        order.status === 'confirmed' ? 'bg-green-500/20 text-green-300' :
-                        order.status === 'rejected' ? 'bg-red-500/20 text-red-300' :
-                        'bg-yellow-500/20 text-yellow-300'
+                        order.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                        order.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
                     }">
                         ${order.status === 'confirmed' ? 'အတည်ပြုပြီး' : 
                           order.status === 'rejected' ? 'ငြင်းဆိုထား' : 'စောင့်ဆိုင်းနေ'}
@@ -634,29 +614,29 @@ class EShopApp {
                 
                 ${order.products ? `
                     <div class="flex items-center mb-4">
-                        <img src="${order.products.icon_url || 'https://via.placeholder.com/60x60/1f2937/9ca3af?text=Product'}" 
+                        <img src="${order.products.icon_url || 'https://via.placeholder.com/60x60'}" 
                              alt="${order.products.name}" class="w-15 h-15 rounded-lg mr-4">
                         <div>
                             <p class="font-medium">${order.products.name}</p>
-                            <p class="text-blue-300 font-semibold">${order.products.price} <span class="currency-symbol">ကျပ်</span></p>
+                            <p class="text-blue-600 font-semibold">${order.products.price} ကျပ်</p>
                         </div>
                     </div>
                 ` : ''}
                 
-                <div class="grid grid-cols-2 gap-4 text-sm text-gray-300">
+                <div class="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                        <p class="text-gray-400">Telegram:</p>
+                        <p class="text-gray-500">Telegram:</p>
                         <p class="font-medium">${order.buyer_telegram}</p>
                     </div>
                     <div>
-                        <p class="text-gray-400">Transaction ID:</p>
+                        <p class="text-gray-500">Transaction ID:</p>
                         <p class="font-medium">${order.transaction_id}</p>
                     </div>
                 </div>
                 
                 ${order.status === 'confirmed' ? `
                     <div class="mt-4">
-                        <button onclick="app.downloadOrderPDF('${order.id}')" class="bg-secondary/20 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-secondary/40 transition-all">
+                        <button onclick="app.downloadOrderPDF('${order.id}')" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
                             <i class="fas fa-download mr-1"></i>
                             Order List ဒေါင်းလုဒ်လုပ်ပါ
                         </button>
@@ -747,8 +727,8 @@ class EShopApp {
         if (news.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-12">
-                    <i class="fas fa-newspaper text-6xl text-gray-600 mb-4"></i>
-                    <p class="text-gray-400 text-lg">သတင်းများ မရှိသေးပါ</p>
+                    <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500 text-lg">သတင်းများ မရှိသေးပါ</p>
                 </div>
             `;
             return;
@@ -762,8 +742,8 @@ class EShopApp {
             const images = Array.isArray(item.images) ? item.images : [];
             
             return `
-                <div class="glass-effect rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-white mb-3">${item.title}</h3>
+                <div class="bg-white rounded-2xl card-shadow p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">${item.title}</h3>
                     
                     ${item.video_url ? `
                         <div class="mb-4">
@@ -781,12 +761,12 @@ class EShopApp {
                         </div>
                     ` : ''}
                     
-                    <p class="text-gray-400 mb-4">${item.content}</p>
+                    <p class="text-gray-600 mb-4">${item.content}</p>
                     
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-500">${new Date(item.created_at).toLocaleDateString('my-MM')}</span>
                         ${contactInfo.telegram ? `
-                            <a href="${contactInfo.telegram}" target="_blank" class="text-accent hover:underline">
+                            <a href="${contactInfo.telegram}" target="_blank" class="text-blue-500 hover:text-blue-700">
                                 <i class="fab fa-telegram mr-1"></i>
                                 ဆက်သွယ်ပါ
                             </a>
@@ -871,4 +851,3 @@ class EShopApp {
 
 // Initialize app
 const app = new EShopApp();
-
