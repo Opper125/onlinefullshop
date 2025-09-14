@@ -3,383 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Myanmar E-Shop - Online Shopping Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <title>Myanmar E-Shop - Aurora Flow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#6366f1',
-                        secondary: '#8b5cf6',
-                        accent: '#06b6d4',
-                        dark: '#0f172a',
-                        light: '#f8fafc'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
-                    },
-                    animation: {
-                        'fadeIn': 'fadeIn 0.6s ease-in-out',
-                        'slideUp': 'slideUp 0.8s ease-out',
-                        'pulse-slow': 'pulse 3s infinite',
-                        'bounce-slow': 'bounce 2s infinite',
-                        'glow': 'glow 2s ease-in-out infinite alternate'
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+        :root {
+            --primary-color: #f72585;
+            --secondary-color: #7209b7;
+            --accent-color: #3a0ca3;
+            --highlight-color: #4cc9f0;
+            --bg-color: #f0f2f5;
+            --text-dark: #1a1a1a;
+            --text-light: #fefefe;
+            --surface-bg: rgba(255, 255, 255, 0.65);
+            --surface-border: rgba(255, 255, 255, 0.8);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            font-family: 'Noto Sans Myanmar', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        /* --- Aurora Animated Background --- */
+        #aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .aurora-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.5;
+            animation: move 25s linear infinite alternate;
+        }
+        
+        .shape1 { background-color: var(--primary-color); width: 400px; height: 400px; top: -10%; left: -5%; }
+        .shape2 { background-color: var(--secondary-color); width: 500px; height: 500px; top: 20%; right: -15%; animation-delay: 5s; animation-direction: alternate-reverse; }
+        .shape3 { background-color: var(--accent-color); width: 450px; height: 450px; bottom: -10%; left: 30%; animation-delay: 10s; }
+        .shape4 { background-color: var(--highlight-color); width: 350px; height: 350px; bottom: 25%; right: 20%; animation-delay: 15s; animation-direction: alternate-reverse;}
+
+        @keyframes move {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1.2); }
+            100% { transform: translate(100px, -50px) rotate(180deg) scale(1); }
+        }
+        
+        /* --- Frosted Glass UI Card --- */
+        .frosted-card {
+            background: var(--surface-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--surface-border);
+            border-radius: 24px;
+            box-shadow: 0 12px 32px 0 var(--shadow-color);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .frosted-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Buttons --- */
+        .btn-fancy {
+            background-image: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--text-light);
+            font-weight: 600;
+            border-radius: 16px;
+            padding: 14px 28px;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease-out, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(114, 9, 183, 0.3);
+        }
+
+        .btn-fancy:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(247, 37, 133, 0.4);
+        }
+
+        /* --- Inputs --- */
+        .fancy-input {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            color: var(--text-dark);
+            border-radius: 12px;
+            padding: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .fancy-input::placeholder { color: #aaa; }
+
+        .fancy-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(247, 37, 133, 0.2);
+            background: #fff;
+        }
+
+        /* --- Navigation --- */
+        .bottom-nav {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 28px 28px 0 0;
+            padding: 8px 0;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            color: #888;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+            transform: translateY(-8px);
+        }
+        
+        .nav-item.active .nav-icon {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 16px;
+            padding: 8px 16px;
+            box-shadow: 0 4px 15px rgba(247, 37, 133, 0.5);
+        }
+
+        /* --- Page Animations --- */
+        .page {
+             animation: page-fade-in 0.8s ease-in-out forwards;
+        }
+        
+        .content-item {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: item-slide-up 0.6s ease-out forwards;
+        }
+
+        @keyframes page-fade-in {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+        @keyframes item-slide-up {
             to { opacity: 1; transform: translateY(0); }
         }
         
-        @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        /* --- Loading Animation --- */
+        #loadingOverlay .loading-bar-container {
+            width: 150px; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px;
         }
-        
-        @keyframes glow {
-            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
-            to { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); }
+        #loadingOverlay .loading-bar {
+            width: 100%; height: 100%; border-radius: 2px;
+            background-image: linear-gradient(90deg, var(--primary-color), var(--highlight-color));
+            animation: loading-flow 1.5s ease-in-out infinite;
         }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            min-height: 100vh;
-        }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(99, 102, 241, 0.3);
-            border-top: 4px solid #6366f1;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .currency-symbol {
-            font-weight: 600;
-            color: #10b981;
-        }
-        
-        .platform-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            transition: all 0.3s ease;
-        }
-        
-        .platform-icon:hover {
-            transform: scale(1.1);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+        @keyframes loading-flow {
+            0% { transform: translateX(-100%); } 100% { transform: translateX(100%); }
         }
 
-        .nav-btn {
-            color: white;
-        }
-        
-        .nav-btn.active {
-            color: #06b6d4;
-            transform: scale(1.1);
-        }
+        /* --- Scrollbar --- */
+        .scrollable-content::-webkit-scrollbar { display: none; }
+        .scrollable-content { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-dark text-white min-h-screen flex flex-col">
+<body class="min-h-screen">
+    <div id="aurora-bg">
+        <div class="aurora-shape shape1"></div>
+        <div class="aurora-shape shape2"></div>
+        <div class="aurora-shape shape3"></div>
+        <div class="aurora-shape shape4"></div>
+    </div>
     
-    <!-- Connection Status -->
-    <div id="connectionStatus" class="fixed top-0 left-0 right-0 z-50 p-3 text-center text-sm font-medium transition-all duration-300">
-        <div id="statusContent" class="inline-flex items-center gap-2">
-            <div class="loading-spinner w-4 h-4"></div>
-            <span>ဒေတာဘေ့စ် ချိတ်ဆက်နေသည်...</span>
-        </div>
+    <div id="connectionStatus" class="fixed top-4 right-4 z-[1000] px-4 py-2 rounded-full text-xs font-semibold frosted-card text-gray-700">
+        <i class="fas fa-wifi mr-1"></i>
+        <span id="connectionText">ချိတ်ဆက်နေသည်...</span>
     </div>
 
-    <!-- Auth Container -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="text-center frosted-card p-8">
+            <div class="loading-bar-container mx-auto mb-4 overflow-hidden"><div class="loading-bar"></div></div>
+            <p class="text-gray-600 font-medium">လုပ်ဆောင်နေသည်...</p>
+        </div>
+    </div>
+    
+    <div id="messageContainer" class="fixed top-20 right-4 z-50 space-y-3 w-full max-w-sm"></div>
+
     <div id="authSection" class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-md">
-            
-            <!-- Logo -->
+        <div class="w-full max-w-md page">
             <div class="text-center mb-8">
                 <img src="https://github.com/Opper125/onlinefullshop/blob/27ec68bd95250f633560c60baaad541d29f94f16/logo-dashboard.png?raw=true" 
-                     alt="Myanmar E-Shop" class="w-24 h-24 mx-auto rounded-2xl mb-4 animate-pulse-slow">
-                <h1 class="text-3xl font-bold gradient-text">Myanmar E-Shop</h1>
-                <p class="text-gray-400 mt-2">Professional E-Commerce Platform</p>
+                     alt="Logo" class="w-32 h-32 mx-auto rounded-3xl mb-4 p-1 bg-white/50 shadow-lg">
+                <h1 class="text-4xl font-bold text-[var(--text-dark)] tracking-wider">Myanmar E-Shop</h1>
+                <p class="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary-color)] to-[var(--secondary-color)]">အွန်လိုင်းဈေးဝယ်စင်တာ</p>
             </div>
 
-            <!-- Auth Tabs -->
-            <div class="glass-effect p-8 rounded-2xl animate-fadeIn">
-                <div class="flex mb-6">
-                    <button id="loginTab" class="flex-1 py-3 px-4 rounded-lg font-medium transition-all mr-2 text-white bg-primary/20 hover:bg-primary/40">
-                        အကောင့်ဝင်ရောက်
-                    </button>
-                    <button id="signupTab" class="flex-1 py-3 px-4 rounded-lg font-medium transition-all text-white bg-gray-100/10 hover:bg-gray-100/20">
-                        အကောင့်ဖွင့်
-                    </button>
+            <div class="frosted-card p-8">
+                <div class="flex mb-6 bg-gray-200/50 rounded-xl p-1">
+                    <button id="loginTab" class="flex-1 py-2 px-4 rounded-lg font-medium transition-all mr-1">အကောင့်ဝင်ရန်</button>
+                    <button id="signupTab" class="flex-1 py-2 px-4 rounded-lg font-medium transition-all">အကောင့်ဖွင့်ရန်</button>
                 </div>
 
-                <!-- Login Form -->
                 <form id="loginForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-2">အီးမေးလ် သို့မဟုတ် အသုံးပြုသူနာမည်</label>
-                        <input type="text" id="loginInput" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">စကားဝှက်</label>
-                        <input type="password" id="loginPassword" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
-                    </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:from-primary/80 hover:to-secondary/80 transition-all transform hover:scale-105 animate-glow">
-                        အကောင့်ဝင်ရောက်
-                    </button>
+                    <input type="text" id="loginInput" class="w-full fancy-input" placeholder="အီးမေးလ် သို့မဟုတ် အသုံးပြုသူနာမည်">
+                    <input type="password" id="loginPassword" class="w-full fancy-input" placeholder="စကားဝှက်">
+                    <button type="submit" class="w-full btn-fancy mt-2">ဝင်ရောက်မည်</button>
                 </form>
 
-                <!-- Signup Form -->
                 <form id="signupForm" class="space-y-4 hidden">
-                    <div>
-                        <label class="block text-sm font-medium mb-2">အမည်</label>
-                        <input type="text" id="signupName" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">အသုံးပြုသူနာမည်</label>
-                        <input type="text" id="signupUsername" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">အီးမေးလ်</label>
-                        <input type="email" id="signupEmail" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">စကားဝှက်</label>
-                        <input type="password" id="signupPassword" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
-                    </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-accent to-primary p-3 rounded-lg font-semibold hover:from-accent/80 hover:to-primary/80 transition-all transform hover:scale-105 animate-glow">
-                        အကောင့်ဖွင့်ပါ
-                    </button>
+                    <input type="text" id="signupName" class="w-full fancy-input" placeholder="အမည်" required>
+                    <input type="text" id="signupUsername" class="w-full fancy-input" placeholder="အသုံးပြုသူနာမည်" required>
+                    <input type="email" id="signupEmail" class="w-full fancy-input" placeholder="အီးမေးလ်" required>
+                    <input type="password" id="signupPassword" class="w-full fancy-input" placeholder="စကားဝှက်" required>
+                    <button type="submit" class="w-full btn-fancy mt-2">အကောင့်ဖွင့်မည်</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Main App Section -->
-    <div id="appSection" class="hidden min-h-screen bg-gray-100 flex flex-col">
-        
-        <!-- Header -->
-        <header class="glass-effect p-4 mb-6 sticky top-0 z-10">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <img src="https://github.com/Opper125/onlinefullshop/blob/27ec68bd95250f633560c60baaad541d29f94f16/logo-dashboard.png?raw=true" 
-                         alt="Logo" class="w-12 h-12 rounded-lg">
-                    <h1 class="text-xl font-bold gradient-text">Myanmar E-Shop</h1>
-                </div>
-                
-                <div class="flex items-center gap-4">
-                    <span id="welcomeUser" class="hidden sm:block text-sm text-gray-300"></span>
-                    <button id="logoutBtn" class="bg-red-500/20 hover:bg-red-500/30 px-4 py-2 rounded-lg transition-all">
-                        <i class="fas fa-sign-out-alt mr-2"></i>ထွက်ရန်
-                    </button>
-                </div>
-            </div>
+    <div id="appSection" class="hidden h-screen flex flex-col">
+        <header class="p-4 flex items-center justify-between flex-shrink-0">
+            <img src="https://github.com/Opper125/onlinefullshop/blob/27ec68bd95250f633560c60baaad541d29f94f16/logo-dashboard.png?raw=true" 
+                 alt="Logo" class="w-12 h-12 rounded-xl bg-white/50 p-1">
+            <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary-color)] to-[var(--secondary-color)]">Myanmar E-Shop</h1>
+            <button id="logoutBtn" class="text-red-500 hover:text-red-700 transition-colors">
+                <i class="fas fa-sign-out-alt text-2xl"></i>
+            </button>
         </header>
 
-        <!-- Page Content -->
-        <main id="pageContent" class="pb-20 flex-grow">
-            <!-- Home Page -->
-            <div id="homePage" class="p-4">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold mb-4 gradient-text">ထုတ်ကုန်များ</h2>
-                    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <!-- Products will be loaded here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- History Page -->
-            <div id="historyPage" class="p-4 hidden">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold mb-4 gradient-text">မှာယူမှုမှတ်တမ်းများ</h2>
-                    <div id="ordersHistory" class="space-y-4">
-                        <!-- Order history will be loaded here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- News Page -->
-            <div id="newsPage" class="p-4 hidden">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold mb-4 gradient-text">သတင်းများ</h2>
-                    <div id="newsContainer" class="space-y-6">
-                        <!-- News will be loaded here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Profile Page -->
-            <div id="profilePage" class="p-4 hidden">
-                <div class="max-w-md mx-auto">
-                    <h2 class="text-2xl font-bold mb-6 gradient-text">ကိုယ်ရေးအချက်အလက်</h2>
-                    
-                    <div class="glass-effect p-6 rounded-2xl">
-                        <form id="profileForm" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-2">အမည်</label>
-                                <input type="text" id="profileName" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium mb-2">အသုံးပြုသူနာမည်</label>
-                                <input type="text" id="profileUsername" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium mb-2">အီးမေးလ်</label>
-                                <input type="email" id="profileEmail" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all">
-                            </div>
-                            
-                            <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:from-primary/80 hover:to-secondary/80 transition-all transform hover:scale-105">
-                                အချက်အလက်များ အပ်ဒိတ်လုပ်ပါ
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <main id="pageContent" class="flex-grow overflow-y-auto scrollable-content">
+            <div id="homePage" class="p-4 page"><h2 class="text-3xl font-bold mb-6">ထုတ်ကုန်များ</h2><div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div></div>
+            <div id="historyPage" class="p-4 page hidden"><h2 class="text-3xl font-bold mb-6">မှာယူမှုမှတ်တမ်းများ</h2><div id="ordersHistory" class="space-y-5"></div></div>
+            <div id="newsPage" class="p-4 page hidden"><h2 class="text-3xl font-bold mb-6">သတင်းများ</h2><div id="newsContainer" class="space-y-6"></div></div>
+            <div id="profilePage" class="p-4 page hidden"><h2 class="text-3xl font-bold mb-6">ကိုယ်ရေးအချက်အလက်</h2><div class="frosted-card p-6"><form id="profileForm" class="space-y-4"><div><label class="block text-sm font-medium text-gray-700 mb-2">အမည်</label><input type="text" id="profileName" class="w-full fancy-input"></div><div><label class="block text-sm font-medium text-gray-700 mb-2">အသုံးပြုသူနာမည်</label><input type="text" id="profileUsername" class="w-full fancy-input"></div><div><label class="block text-sm font-medium text-gray-700 mb-2">အီးမေးလ်</label><input type="email" id="profileEmail" class="w-full fancy-input"></div><button type="submit" class="w-full btn-fancy mt-4">အပ်ဒိတ်လုပ်ပါ</button></form></div></div>
         </main>
 
-        <!-- Bottom Navigation -->
-        <nav class="fixed bottom-0 left-0 right-0 glass-effect p-4 z-10">
-            <div class="flex justify-around">
-                <button class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/10" data-page="home">
-                    <i class="fas fa-home text-lg"></i>
-                    <span class="text-xs">ပင်မ</span>
-                </button>
-                <button class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/10" data-page="history">
-                    <i class="fas fa-history text-lg"></i>
-                    <span class="text-xs">မှတ်တမ်း</span>
-                </button>
-                <button class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/10" data-page="news">
-                    <i class="fas fa-newspaper text-lg"></i>
-                    <span class="text-xs">သတင်း</span>
-                </button>
-                <button class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/10" data-page="profile">
-                    <i class="fas fa-user text-lg"></i>
-                    <span class="text-xs">ပရိုဖိုင်</span>
-                </button>
+        <nav class="fixed bottom-0 left-0 right-0 bottom-nav flex-shrink-0">
+            <div class="flex justify-around max-w-lg mx-auto">
+                <button class="nav-item p-2" data-page="home"><div class="nav-icon"><i class="fas fa-home text-xl block"></i></div><span class="text-xs font-medium">ပင်မ</span></button>
+                <button class="nav-item p-2" data-page="history"><div class="nav-icon"><i class="fas fa-history text-xl block"></i></div><span class="text-xs font-medium">မှတ်တမ်း</span></button>
+                <button class="nav-item p-2" data-page="news"><div class="nav-icon"><i class="fas fa-newspaper text-xl block"></i></div><span class="text-xs font-medium">သတင်း</span></button>
+                <button class="nav-item p-2" data-page="profile"><div class="nav-icon"><i class="fas fa-user text-xl block"></i></div><span class="text-xs font-medium">ပရိုဖိုင်</span></button>
             </div>
         </nav>
     </div>
 
-    <!-- Product Detail Modal -->
-    <div id="productModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-effect p-6 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">ထုတ်ကုန်အသေးစိတ်</h3>
-                <button id="closeProductModal" class="text-gray-400 hover:text-white">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div id="productModalContent">
-                <!-- Product details will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Payment Modal -->
-    <div id="paymentModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-effect p-6 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">ငွေပေးချေမှု</h3>
-                <button id="closePaymentModal" class="text-gray-400 hover:text-white">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div id="paymentModalContent">
-                <!-- Payment methods will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Order Submission Modal -->
-    <div id="orderModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-effect p-6 rounded-2xl max-w-md w-full">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">မှာယူမှုတင်ပြခြင်း</h3>
-                <button id="closeOrderModal" class="text-gray-400 hover:text-white">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <form id="orderForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-2">Telegram အသုံးပြုသူနာမည်</label>
-                    <input type="text" id="orderTelegram" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required placeholder="@yourusername">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-2">ငွေလွှဲလုပ်ငန်းစဥ်အမှတ်</label>
-                    <input type="text" id="orderTransactionId" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-2">ငွေလွှဲသူအမည်</label>
-                    <input type="text" id="orderSenderName" class="w-full p-3 bg-white/10 rounded-lg border border-white/20 focus:border-primary focus:outline-none transition-all" required>
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:from-primary/80 hover:to-secondary/80 transition-all transform hover:scale-105">
-                    မှာယူမှုကို တင်ပြပါ
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Success/Error Messages -->
-    <div id="messageContainer" class="fixed top-20 right-4 z-50 space-y-2"></div>
+    <!-- Modals -->
+    <div id="productModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 hidden p-4"><div class="frosted-card max-w-md w-full max-h-[90vh] overflow-y-auto scrollable-content"><div class="p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold">ထုတ်ကုန်အသေးစိတ်</h3><button id="closeProductModal" class="text-gray-500 hover:text-gray-800"><i class="fas fa-times text-xl"></i></button></div><div id="productModalContent"></div></div></div></div>
+    <div id="paymentModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 hidden p-4"><div class="frosted-card max-w-md w-full max-h-[90vh] overflow-y-auto scrollable-content"><div class="p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold">ငွေပေးချေမှု</h3><button id="closePaymentModal" class="text-gray-500 hover:text-gray-800"><i class="fas fa-times text-xl"></i></button></div><div id="paymentModalContent"></div></div></div></div>
+    <div id="orderModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 hidden p-4"><div class="frosted-card max-w-md w-full"><div class="p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold">မှာယူမှုတင်ပြခြင်း</h3><button id="closeOrderModal" class="text-gray-500 hover:text-gray-800"><i class="fas fa-times text-xl"></i></button></div><form id="orderForm" class="space-y-4"><input type="text" id="orderTelegram" class="w-full fancy-input" required placeholder="@yourusername"><input type="text" id="orderTransactionId" class="w-full fancy-input" required placeholder="ငွေလွှဲလုပ်ငန်းစဥ်အမှတ်"><input type="text" id="orderSenderName" class="w-full fancy-input" required placeholder="ငွေလွှဲသူအမည်"><button type="submit" class="w-full btn-fancy">တင်ပြမည်</button></form></div></div></div>
     
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
-        <div class="glass-effect p-8 rounded-2xl text-center">
-            <div class="loading-spinner mx-auto mb-4"></div>
-            <p class="font-semibold">လုပ်ဆောင်နေသည်...</p>
-        </div>
-    </div>
-
     <script src="js/app.js"></script>
 </body>
 </html>
+
 
